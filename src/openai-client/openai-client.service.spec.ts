@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { OpenaiClientService } from './openai_client.service';
+import { OpenaiClientService } from './openai-client.service';
 
 describe('OpenaiClientService', () => {
   let service: OpenaiClientService;
