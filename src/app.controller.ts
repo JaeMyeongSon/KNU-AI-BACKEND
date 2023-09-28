@@ -1,12 +1,13 @@
 import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ExampleResponseSwagger } from './common/swagger/example-response.swagger';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
-
   @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  @ApiOperation({ summary: '예시용 api' })
+  @ApiResponse({ type: ExampleResponseSwagger })
+  getHello(): number {
+    return 30;
   }
 }
