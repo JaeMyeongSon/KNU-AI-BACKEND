@@ -1,7 +1,7 @@
 import { BaseResponseSwagger } from './base-response.swagger';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class ExampleResponseSwagger extends BaseResponseSwagger {
+export class ExampleResponseSwagger implements BaseResponseSwagger {
   @ApiProperty({
     required: true,
     example: 2,
