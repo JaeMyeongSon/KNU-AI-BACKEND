@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import OpenAI from 'openai';
+import { ChatbotRole } from './chatbot.role';
 
 @Injectable()
 export class OpenaiClientService {
@@ -15,7 +16,7 @@ export class OpenaiClientService {
   async chat(message: string): Promise<string> {
     try {
       const chatCompletion = await this.openai.chat.completions.create({
-        messages: this.createMessages(message) as any,
+        messages: this.createMessages(ChatbotRole.Lawyer, message) as any,
         model: this.configService.get('OPENAI_API_MODEL'),
       });
 
@@ -30,7 +31,16 @@ export class OpenaiClientService {
     }
   }
 
-  private createMessages(message: string) {
-    return [{ role: 'user', content: message }];
+  private createMessages(role: ChatbotRole, message: string) {
+    return [this.roleMessages(role), { role: 'user', content: message }].flat();
+  }
+
+  private roleMessages(role: ChatbotRole) {
+    let content: string;
+    if (role == ChatbotRole.Lawyer) {
+      content = 'You are a competent lawyer working in Korea.';
+    }
+
+    return [{ role: 'system', content: content }];
   }
 }
