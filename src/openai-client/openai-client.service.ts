@@ -20,9 +20,9 @@ export class OpenaiClientService {
     });
   }
 
-  async chat(message: string): Promise<string> {
+  async chat(role: ChatbotRole, message: string): Promise<string> {
     try {
-      const messages = await this.createMessages(ChatbotRole.Lawyer, message);
+      const messages = await this.createMessages(role, message);
 
       const chatCompletion = await this.openai.chat.completions.create({
         messages: messages as any,
