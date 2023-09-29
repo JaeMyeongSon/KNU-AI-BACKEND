@@ -16,8 +16,8 @@ export class ChatsController {
     type: CreateMessageResponseSwagger,
   })
   async createMessage(@Body() content: CreateMessageRequestDto) {
-    const { message } = content;
+    const { role, message } = content;
 
-    return await this.openaiClientService.chat(message);
+    return await this.openaiClientService.chat(role, message);
   }
 }

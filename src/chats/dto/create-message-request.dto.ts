@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { ChatbotRole } from '../../openai-client/chatbot.role';
 
 export class CreateMessageRequestDto {
   @ApiProperty({
@@ -10,4 +11,11 @@ export class CreateMessageRequestDto {
   @IsString()
   @IsNotEmpty()
   message: string;
+
+  @ApiProperty({
+    required: true,
+    enum: ChatbotRole,
+  })
+  @IsEnum(ChatbotRole)
+  role: ChatbotRole;
 }
