@@ -2,12 +2,19 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import OpenAI from 'openai';
 import { ChatbotRole } from './chatbot.role';
+import { OpenaiMessageDto } from './dto/openai-message.dto';
+import { Chatbot } from '../schemas/chatbot.schema';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class OpenaiClientService {
   private readonly openai: OpenAI;
 
-  constructor(private readonly configService: ConfigService) {
+  constructor(
+    private readonly configService: ConfigService,
+    @InjectModel(Chatbot.name) private readonly chatbotModel: Model<Chatbot>,
+  ) {
     this.openai = new OpenAI({
       apiKey: this.configService.get('OPENAI_API_KEY'),
     });
@@ -15,8 +22,10 @@ export class OpenaiClientService {
 
   async chat(message: string): Promise<string> {
     try {
+      const messages = await this.createMessages(ChatbotRole.Lawyer, message);
+
       const chatCompletion = await this.openai.chat.completions.create({
-        messages: this.createMessages(ChatbotRole.Lawyer, message) as any,
+        messages: messages as any,
         model: this.configService.get('OPENAI_API_MODEL'),
       });
 
@@ -31,16 +40,20 @@ export class OpenaiClientService {
     }
   }
 
-  private createMessages(role: ChatbotRole, message: string) {
-    return [this.roleMessages(role), { role: 'user', content: message }].flat();
+  private async createMessages(
+    role: ChatbotRole,
+    message: string,
+  ): Promise<OpenaiMessageDto[]> {
+    const setupMessages = await this.getSetupMessages(role);
+
+    return [...setupMessages, new OpenaiMessageDto('user', message)];
   }
 
-  private roleMessages(role: ChatbotRole) {
-    let content: string;
-    if (role == ChatbotRole.Lawyer) {
-      content = 'You are a competent lawyer working in Korea.';
-    }
+  private async getSetupMessages(
+    role: ChatbotRole,
+  ): Promise<OpenaiMessageDto[]> {
+    const chatbot = await this.chatbotModel.findOne({ role: role });
 
-    return [{ role: 'system', content: content }];
+    return chatbot.setupMessages;
   }
 }
