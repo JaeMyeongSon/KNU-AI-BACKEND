@@ -10,7 +10,16 @@ export class WsExceptionFilter {
   }
 
   public handleError(client: Socket, exception: HttpException | WsException) {
-    console.log('Web Socket Error');
-    client.emit('error', `error: ${exception.message}`);
+    if (exception instanceof HttpException) {
+      const res = exception.getResponse();
+
+      if (res.hasOwnProperty('message')) {
+        client.emit('error', (res as { message: string }).message);
+      } else {
+        client.emit('error', exception.message);
+      }
+    } else {
+      client.emit('error', exception.message);
+    }
   }
 }
