@@ -6,8 +6,8 @@ import { OpenaiClientModule } from './openai-client/openai-client.module';
 import { ChatsModule } from './chats/chats.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ChatbotsModule } from './chatbots/chatbots.module';
-import { UserModule } from './user/user.module';
 import * as process from 'process';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -16,7 +16,7 @@ import * as process from 'process';
     OpenaiClientModule,
     ChatsModule,
     ChatbotsModule,
-    UserModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
