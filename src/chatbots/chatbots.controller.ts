@@ -6,6 +6,7 @@ import { CreateMessageRequestDto } from './dto/create-message-request.dto';
 import { ChatbotDto } from './dto/chatbot.dto';
 import { GetChatbotsResponseDto } from './dto/get-chatbots-response.dto';
 import { CreateMessageResponseDto } from './dto/create-message-response.dto';
+import { SaveChatDto } from './dto/save-chat.dto';
 
 @ApiTags('Chatbots')
 @Controller('api/chatbots')
@@ -34,9 +35,17 @@ export class ChatbotsController {
     type: CreateMessageResponseDto,
   })
   async createMessage(@Body() content: CreateMessageRequestDto) {
-    const { id, message } = content;
+    const { id: chatbotId, message } = content;
 
-    const reply = await this.openaiClientService.chat(id, message);
+    const p1 = this.chatbotsService.saveChat(
+      new SaveChatDto(chatbotId, 'temp', message, true),
+    );
+    const reply = await this.openaiClientService.chat(chatbotId, message);
+    const p2 = this.chatbotsService.saveChat(
+      new SaveChatDto(chatbotId, 'temp', reply, false),
+    );
+
+    await Promise.all([p1, p2]);
 
     return new CreateMessageResponseDto(reply);
   }
