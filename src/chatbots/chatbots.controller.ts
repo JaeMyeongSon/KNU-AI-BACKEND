@@ -3,6 +3,7 @@ import { ChatbotsService } from './chatbots.service';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { OpenaiClientService } from '../openai-client/openai-client.service';
 import { CreateMessageRequestDto } from './dto/create-message-request.dto';
+import { ChatbotDto } from './dto/chatbot.dto';
 
 @ApiTags('Chatbots')
 @Controller('api/chatbots')
@@ -12,14 +13,16 @@ export class ChatbotsController {
     private readonly openaiClientService: OpenaiClientService,
   ) {}
 
-  @Get('roles')
-  @ApiOperation({ summary: '챗봇의 역할 목록을 조회' })
+  @Get()
+  @ApiOperation({ summary: '챗봇 목록을 조회' })
   @ApiOkResponse({
-    description: '챗봇의 역할 목록',
-    type: [String],
+    description: '챗봇 목록',
+    type: [ChatbotDto],
   })
-  async getChatbotRoles() {
-    return await this.chatbotsService.getChatbotRoles();
+  async getChatbots() {
+    const chatbots = await this.chatbotsService.getChatbots();
+
+    return chatbots.map((chatbot) => ChatbotDto.fromSchema(chatbot));
   }
 
   @Post('chats')

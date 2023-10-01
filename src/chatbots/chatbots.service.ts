@@ -9,9 +9,7 @@ export class ChatbotsService {
     @InjectModel(Chatbot.name) private readonly chatbotModel: Model<Chatbot>,
   ) {}
 
-  async getChatbotRoles(): Promise<string[]> {
-    const chatbots = await this.chatbotModel.find();
-
-    return chatbots.map((chatbot): string => chatbot.role);
+  getChatbots() {
+    return this.chatbotModel.find();
   }
 }
