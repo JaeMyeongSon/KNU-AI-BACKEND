@@ -12,4 +12,12 @@ export class UsersService {
 
     return users.map((user): string => user.userName);
   }
+  async createUser(userName: string, password: string) {
+    const user = await this.userModel.create({
+      userName,
+      password,
+    });
+    console.log(userName, ' 생성완료');
+    return user;
+  }
 }
