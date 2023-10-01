@@ -5,6 +5,7 @@ import { OpenaiClientService } from '../openai-client/openai-client.service';
 import { CreateMessageRequestDto } from './dto/create-message-request.dto';
 import { ChatbotDto } from './dto/chatbot.dto';
 import { GetChatbotsResponseDto } from './dto/get-chatbots-response.dto';
+import { CreateMessageResponseDto } from './dto/create-message-response.dto';
 
 @ApiTags('Chatbots')
 @Controller('api/chatbots')
@@ -30,11 +31,13 @@ export class ChatbotsController {
   @ApiOperation({ summary: '챗봇에게 채팅 메시지 전송' })
   @ApiOkResponse({
     description: '챗봇의 응답 메시지',
-    type: String,
+    type: CreateMessageResponseDto,
   })
   async createMessage(@Body() content: CreateMessageRequestDto) {
-    const { role, message } = content;
+    const { id, message } = content;
 
-    return await this.openaiClientService.chat(role, message);
+    const reply = await this.openaiClientService.chat(id, message);
+
+    return new CreateMessageResponseDto(reply);
   }
 }

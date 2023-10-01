@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import OpenAI from 'openai';
-import { ChatbotRole } from './chatbot.role';
 import { OpenaiMessageDto } from './dto/openai-message.dto';
 import { Chatbot } from '../schemas/chatbot.schema';
 import { InjectModel } from '@nestjs/mongoose';
@@ -20,9 +19,9 @@ export class OpenaiClientService {
     });
   }
 
-  async chat(role: ChatbotRole, message: string): Promise<string> {
+  async chat(id: string, message: string): Promise<string> {
     try {
-      const messages = await this.createMessages(role, message);
+      const messages = await this.createMessages(id, message);
 
       const chatCompletion = await this.openai.chat.completions.create({
         messages: messages as any,
@@ -41,18 +40,16 @@ export class OpenaiClientService {
   }
 
   private async createMessages(
-    role: ChatbotRole,
+    id: string,
     message: string,
   ): Promise<OpenaiMessageDto[]> {
-    const setupMessages = await this.getSetupMessages(role);
+    const setupMessages = await this.getSetupMessages(id);
 
     return [...setupMessages, new OpenaiMessageDto('user', message)];
   }
 
-  private async getSetupMessages(
-    role: ChatbotRole,
-  ): Promise<OpenaiMessageDto[]> {
-    const chatbot = await this.chatbotModel.findOne({ role: role });
+  private async getSetupMessages(id: string): Promise<OpenaiMessageDto[]> {
+    const chatbot = await this.chatbotModel.findById(id);
 
     return chatbot.setupMessages;
   }
