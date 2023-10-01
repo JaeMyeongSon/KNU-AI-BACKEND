@@ -10,14 +10,14 @@ export class UsersService {
   async getUsers(): Promise<string[]> {
     const users = await this.userModel.find();
 
-    return users.map((user): string => user.userName);
+    return users.map((user): string => user.email);
   }
-  async createUser(userName: string, password: string) {
+  async createUser(email: string, password: string) {
     const user = await this.userModel.create({
-      userName,
+      email,
       password,
     });
-    console.log(userName, ' 생성완료');
+    console.log(email, ' 생성완료');
     return user;
   }
 }

@@ -1,20 +1,21 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty } from 'class-validator';
 
 export class PostUserDto {
   @ApiProperty({
     required: true,
-    example: 'oys',
-    description: '유저 아이디',
+    example: 'user1@naver.com',
+    description: '유저 이메일',
   })
-  @IsString()
+  @IsEmail()
   @IsNotEmpty()
-  userName: string;
+  email: string;
 
   @ApiProperty({
     required: true,
     example: '1234',
     description: '비밀번호',
   })
+  @IsNotEmpty()
   password: string;
 }

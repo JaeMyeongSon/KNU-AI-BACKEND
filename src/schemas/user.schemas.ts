@@ -13,7 +13,7 @@ export class User {
     required: true,
     unique: true,
   }) // MongoDB에 들어갈 설정들을 적어준다.
-  userName: string; // 필드 이름: 타입(타입스크립트 타입)
+  email: string; // 필드 이름: 타입(타입스크립트 타입)
 
   @Prop({
     required: true,

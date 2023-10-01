@@ -26,7 +26,7 @@ export class UsersController {
     type: PostUserDto,
   })
   async makeUsers(@Body() content: PostUserDto) {
-    const { userName, password } = content;
-    return await this.usersService.createUser(userName, password);
+    const { email, password } = content;
+    return await this.usersService.createUser(email, password);
   }
 }
