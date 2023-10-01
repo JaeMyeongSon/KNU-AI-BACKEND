@@ -14,6 +14,11 @@ export class Chatbot {
   @Prop({
     required: true,
   })
+  name: string;
+
+  @Prop({
+    required: true,
+  })
   setupMessages: OpenaiMessageDto[];
 }
 
