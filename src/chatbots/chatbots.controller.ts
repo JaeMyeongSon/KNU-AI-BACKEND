@@ -4,6 +4,7 @@ import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { OpenaiClientService } from '../openai-client/openai-client.service';
 import { CreateMessageRequestDto } from './dto/create-message-request.dto';
 import { ChatbotDto } from './dto/chatbot.dto';
+import { GetChatbotsResponseDto } from './dto/get-chatbots-response.dto';
 
 @ApiTags('Chatbots')
 @Controller('api/chatbots')
@@ -22,7 +23,7 @@ export class ChatbotsController {
   async getChatbots() {
     const chatbots = await this.chatbotsService.getChatbots();
 
-    return chatbots.map((chatbot) => ChatbotDto.fromSchema(chatbot));
+    return new GetChatbotsResponseDto(chatbots);
   }
 
   @Post('chats')

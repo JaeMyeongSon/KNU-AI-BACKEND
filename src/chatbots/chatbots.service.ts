@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Chatbot } from '../schemas/chatbot.schema';
 import { Model } from 'mongoose';
+import { ChatbotDto } from './dto/chatbot.dto';
 
 @Injectable()
 export class ChatbotsService {
@@ -9,7 +10,9 @@ export class ChatbotsService {
     @InjectModel(Chatbot.name) private readonly chatbotModel: Model<Chatbot>,
   ) {}
 
-  getChatbots() {
-    return this.chatbotModel.find();
+  async getChatbots() {
+    const chatbots = await this.chatbotModel.find();
+
+    return chatbots.map((chatbot) => ChatbotDto.fromSchema(chatbot));
   }
 }
