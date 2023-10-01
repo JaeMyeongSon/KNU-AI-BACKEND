@@ -1,9 +1,7 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { ChatbotsService } from './chatbots.service';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { GetChatbotRolesSwagger } from './dto/get-chatbot-roles.swagger';
 import { OpenaiClientService } from '../openai-client/openai-client.service';
-import { CreateMessageResponseSwagger } from './dto/create-message-response.swagger';
 import { CreateMessageRequestDto } from './dto/create-message-request.dto';
 
 @ApiTags('Chatbots')
@@ -18,7 +16,7 @@ export class ChatbotsController {
   @ApiOperation({ summary: '챗봇의 역할 목록을 조회' })
   @ApiOkResponse({
     description: '챗봇의 역할 목록',
-    type: GetChatbotRolesSwagger,
+    type: [String],
   })
   async getChatbotRoles() {
     return await this.chatbotsService.getChatbotRoles();
@@ -28,7 +26,7 @@ export class ChatbotsController {
   @ApiOperation({ summary: '챗봇에게 채팅 메시지 전송' })
   @ApiOkResponse({
     description: '챗봇의 응답 메시지',
-    type: CreateMessageResponseSwagger,
+    type: String,
   })
   async createMessage(@Body() content: CreateMessageRequestDto) {
     const { role, message } = content;
