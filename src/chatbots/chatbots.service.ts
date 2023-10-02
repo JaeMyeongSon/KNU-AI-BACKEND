@@ -19,13 +19,8 @@ export class ChatbotsService {
     return chatbots.map((chatbot) => ChatbotDto.fromSchema(chatbot));
   }
 
-  async saveChat(request: SaveChatDto) {
-    const chatbot = await this.chatbotModel.findById(request.chatbotId);
-
-    const saveChat = { ...request, chatbot };
-
-    const createdChat = new this.chatModel(saveChat);
+  async saveChat(saveChatbotDto: SaveChatDto) {
+    const createdChat = new this.chatModel(saveChatbotDto);
     return createdChat.save();
-    // const chat = await this.chatModel.create();
   }
 }

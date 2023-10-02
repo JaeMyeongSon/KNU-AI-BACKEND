@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Chatbot } from './chatbot.schema';
-import mongoose from 'mongoose';
+import { ChatbotDocument, ChatbotSchema } from './chatbot.schema';
+import { Document, Types } from 'mongoose';
 
 @Schema({ timestamps: true })
 export class Chat {
@@ -11,10 +11,10 @@ export class Chat {
 
   @Prop({
     required: true,
-    type: mongoose.Schema.Types.ObjectId,
+    type: Types.ObjectId,
     ref: 'Chatbot',
   })
-  chatbot: Chatbot;
+  chatbotId: Types.ObjectId;
 
   @Prop({
     required: true,
@@ -23,3 +23,17 @@ export class Chat {
 }
 
 export const ChatSchema = SchemaFactory.createForClass(Chat);
+
+ChatbotSchema.virtual('chatbot', {
+  ref: 'Chatbot',
+  localField: 'chatbotId',
+  foreignField: '_id',
+  justOne: true,
+});
+
+export type ChatDocument = Chat &
+  Document & {
+    chatbot: ChatbotDocument;
+    createdAt: Date;
+    updatedAt: Date;
+  };

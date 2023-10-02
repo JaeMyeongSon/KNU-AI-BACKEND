@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { ChatbotRole } from '../../openai-client/chatbot.role';
-import { Chatbot } from '../../schemas/chatbot.schema';
+import { ChatbotDocument } from '../../schemas/chatbot.schema';
 
 export class ChatbotDto {
-  static fromSchema(chatbot: Chatbot & { id?: any }) {
+  static fromSchema(chatbot: ChatbotDocument) {
     const chatbotDto = new ChatbotDto();
 
     chatbotDto.id = chatbot.id;
