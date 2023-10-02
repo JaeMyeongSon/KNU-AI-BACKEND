@@ -9,15 +9,16 @@ import { PostUserDto } from './dto/post-user-request.dto';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Get()
-  @ApiOperation({ summary: '유저 전체 조회' })
-  @ApiOkResponse({
-    description: '유저의 목록',
-    type: GetUsersDto,
-  })
-  async getAllUsers() {
-    return await this.usersService.getUsers();
-  }
+  // 보안상 전체 유저 조회 삭제
+  // @Get()
+  // @ApiOperation({ summary: '유저 전체 조회' })
+  // @ApiOkResponse({
+  //   description: '유저의 목록',
+  //   type: GetUsersDto,
+  // })
+  // async getAllUsers() {
+  //   return await this.usersService.getUsers();
+  // }
 
   @Post()
   @ApiOperation({ summary: '유저 생성->추후 로그인으로 대체' })
