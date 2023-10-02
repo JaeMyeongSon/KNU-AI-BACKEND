@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { ChatbotsService } from './chatbots.service';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { OpenaiClientService } from '../openai-client/openai-client.service';
@@ -7,6 +7,8 @@ import { ChatbotDto } from './dto/chatbot.dto';
 import { GetChatbotsResponseDto } from './dto/get-chatbots-response.dto';
 import { CreateMessageResponseDto } from './dto/create-message-response.dto';
 import { ChatDto } from './dto/chat.dto';
+import { GetChatsRequestDto } from './dto/get-chats-request.dto';
+import { GetChatsResponseDto } from './dto/get-chats-response.dto';
 
 @ApiTags('Chatbots')
 @Controller('api/chatbots')
@@ -26,6 +28,24 @@ export class ChatbotsController {
     const chatbots = await this.chatbotsService.getChatbots();
 
     return new GetChatbotsResponseDto(chatbots);
+  }
+
+  @Get('chats')
+  @ApiOperation({ summary: '챗봇과의 채팅 목록 조회' })
+  @ApiOkResponse({
+    description: '챗봇과의 채팅 목록',
+  })
+  async getChats(@Query() request: GetChatsRequestDto) {
+    const { chatbotId, afterDate } = request;
+    console.log(afterDate);
+
+    const chats = await this.chatbotsService.getChats(
+      chatbotId,
+      'temp',
+      afterDate,
+    );
+
+    return new GetChatsResponseDto(chats);
   }
 
   @Post('chats')
