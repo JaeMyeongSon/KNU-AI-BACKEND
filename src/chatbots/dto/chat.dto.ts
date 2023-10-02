@@ -1,10 +1,10 @@
-import { Chat } from '../../schemas/chat.schema';
+import { ChatDocument } from '../../schemas/chat.schema';
 
 export class ChatDto {
-  static fromSchema(chat: Chat & { id?: any; createdAt?: any }) {
+  static fromSchema(chat: ChatDocument) {
     const chatDto = new ChatDto();
 
-    chatDto.chatbotId = chat.chatbot.id.toString();
+    chatDto.chatbotId = chat.chatbotId.toString();
     chatDto.message = chat.message;
     chatDto.userId = 'temp';
     chatDto.isUserMessage = chat.isUserMessage;
