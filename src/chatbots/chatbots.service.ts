@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Chatbot } from '../schemas/chatbot.schema';
 import { Model } from 'mongoose';
 import { ChatbotDto } from './dto/chatbot.dto';
-import { Chat } from '../schemas/chat.schema';
+import { Chat, ChatDocument } from '../schemas/chat.schema';
 import { ChatDto } from './dto/chat.dto';
 
 @Injectable()
@@ -19,8 +19,15 @@ export class ChatbotsService {
     return chatbots.map((chatbot) => ChatbotDto.fromSchema(chatbot));
   }
 
-  async getChats(chatbotId: string, userId: string) {
-    const chats = await this.chatModel.find({ chatbotId });
+  async getChats(chatbotId: string, userId: string, afterDate: Date) {
+    const chats = await this.chatModel.find<ChatDocument>({
+      chatbotId,
+      createdAt: {
+        $gte: afterDate,
+      },
+    });
+
+    return chats.map((chat) => ChatDto.fromSchema(chat));
   }
 
   async saveChat(chatbotDto: ChatDto) {
