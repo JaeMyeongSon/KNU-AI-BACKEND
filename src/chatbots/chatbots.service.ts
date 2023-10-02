@@ -20,12 +20,20 @@ export class ChatbotsService {
   }
 
   async getChats(chatbotId: string, userId: string, afterDate: Date) {
-    const chats = await this.chatModel.find<ChatDocument>({
+    let query: any = {
       chatbotId,
-      createdAt: {
-        $gte: afterDate,
-      },
-    });
+    };
+
+    if (afterDate !== undefined) {
+      query = {
+        ...query,
+        createdAt: {
+          $gte: afterDate,
+        },
+      };
+    }
+
+    const chats = await this.chatModel.find<ChatDocument>(query);
 
     return chats.map((chat) => ChatDto.fromSchema(chat));
   }

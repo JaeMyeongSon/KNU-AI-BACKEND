@@ -37,7 +37,6 @@ export class ChatbotsController {
   })
   async getChats(@Query() request: GetChatsRequestDto) {
     const { chatbotId, afterDate } = request;
-    console.log(afterDate);
 
     const chats = await this.chatbotsService.getChats(
       chatbotId,
