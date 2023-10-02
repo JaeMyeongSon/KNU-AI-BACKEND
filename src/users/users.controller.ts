@@ -1,8 +1,8 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UsersService } from './users.service';
-import { GetUsersDto } from './dto/get-users.dto';
-import { PostUserDto } from './dto/post-user-request.dto';
+import { JoinRequestDto } from './dto/join.request.dto';
+import { NotLoggedInGuard } from 'src/auth/not-logged-in.guard copy';
 
 @ApiTags('Users')
 @Controller('api/users')
@@ -20,13 +20,25 @@ export class UsersController {
   //   return await this.usersService.getUsers();
   // }
 
+  // @Post()
+  // @ApiOperation({ summary: '유저 생성->추후 로그인으로 대체' })
+  // @ApiOkResponse({
+  //   description: '유저의 생성완료',
+  //   type: PostUserDto,
+  // })
+  // async makeUsers(@Body() content: PostUserDto) {
+  //   const { email, password } = content;
+  //   return await this.usersService.createUser(email, password);
+  // }
+
   @Post()
-  @ApiOperation({ summary: '유저 생성->추후 로그인으로 대체' })
+  @UseGuards(new NotLoggedInGuard())
+  @ApiOperation({ summary: '회원가입' })
   @ApiOkResponse({
     description: '유저의 생성완료',
-    type: PostUserDto,
+    type: JoinRequestDto,
   })
-  async makeUsers(@Body() content: PostUserDto) {
+  async join(@Body() content: JoinRequestDto) {
     const { email, password } = content;
     return await this.usersService.createUser(email, password);
   }

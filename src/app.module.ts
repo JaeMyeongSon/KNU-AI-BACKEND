@@ -8,6 +8,9 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ChatbotsModule } from './chatbots/chatbots.module';
 import * as process from 'process';
 import { UsersModule } from './users/users.module';
+import { AuthController } from './auth/auth.controller';
+import { AuthService } from './auth/auth.service';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -17,8 +20,9 @@ import { UsersModule } from './users/users.module';
     ChatsModule,
     ChatbotsModule,
     UsersModule,
+    AuthModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController, AuthController],
+  providers: [AppService, AuthService],
 })
 export class AppModule {}
