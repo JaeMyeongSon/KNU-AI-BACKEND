@@ -6,7 +6,7 @@ import { CreateMessageRequestDto } from './dto/create-message-request.dto';
 import { ChatbotDto } from './dto/chatbot.dto';
 import { GetChatbotsResponseDto } from './dto/get-chatbots-response.dto';
 import { CreateMessageResponseDto } from './dto/create-message-response.dto';
-import { SaveChatDto } from './dto/save-chat.dto';
+import { ChatDto } from './dto/chat.dto';
 
 @ApiTags('Chatbots')
 @Controller('api/chatbots')
@@ -36,14 +36,25 @@ export class ChatbotsController {
   })
   async createMessage(@Body() content: CreateMessageRequestDto) {
     const { id: chatbotId, message } = content;
+    const userId = 'temp';
 
-    const p1 = this.chatbotsService.saveChat(
-      new SaveChatDto(chatbotId, 'temp', message, true),
-    );
+    const userChat = ChatDto.createForm({
+      chatbotId,
+      userId,
+      message,
+      isUserMessage: true,
+    });
+    const p1 = this.chatbotsService.saveChat(userChat);
+
     const reply = await this.openaiClientService.chat(chatbotId, message);
-    const p2 = this.chatbotsService.saveChat(
-      new SaveChatDto(chatbotId, 'temp', reply, false),
-    );
+
+    const chatbotChat = ChatDto.createForm({
+      chatbotId,
+      userId,
+      message: reply,
+      isUserMessage: false,
+    });
+    const p2 = this.chatbotsService.saveChat(chatbotChat);
 
     await Promise.all([p1, p2]);
 

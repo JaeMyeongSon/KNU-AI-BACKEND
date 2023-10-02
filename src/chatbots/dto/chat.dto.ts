@@ -13,6 +13,24 @@ export class ChatDto {
     return chatDto;
   }
 
+  static createForm(request: {
+    chatbotId: string;
+    userId: string;
+    message: string;
+    isUserMessage: boolean;
+  }) {
+    const { chatbotId, userId, message, isUserMessage } = request;
+
+    const chatDto = new ChatDto();
+
+    chatDto.userId = userId;
+    chatDto.chatbotId = chatbotId;
+    chatDto.message = message;
+    chatDto.isUserMessage = isUserMessage;
+
+    return chatDto;
+  }
+
   chatbotId: string;
 
   userId: string;
