@@ -8,6 +8,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Chat } from './entities/chat';
 import { Chatbot } from './entities/chatbot';
 import { ChatbotSetupMessage } from './entities/chatbot-setup-message';
+import { ChatsModule } from './chats/chats.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { ChatbotSetupMessage } from './entities/chatbot-setup-message';
     }),
     OpenaiClientModule,
     ChatbotsModule,
+    ChatsModule,
   ],
 })
 export class AppModule {}
