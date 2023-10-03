@@ -5,7 +5,7 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server } from 'socket.io';
-import { CreateMessageRequestDto } from './dto/create-message-request.dto';
+import { CreateMessageRequestDto } from '../chatbots/dto/create-message-request.dto';
 import { UseFilters, UsePipes, ValidationPipe } from '@nestjs/common';
 import { WsExceptionFilter } from '../exception-filters/ws.exception-filter';
 import { OpenaiClientService } from '../openai-client/openai-client.service';
@@ -21,10 +21,13 @@ export class ChatsGateway {
 
   @SubscribeMessage('chats/messages')
   async handleMessage(
-    @MessageBody() { message, role }: CreateMessageRequestDto,
+    @MessageBody() { message, chatbotId }: CreateMessageRequestDto,
   ) {
-    const resEvent = `chats/messages/${role}`;
-    const stream = await this.openaiClientService.chatWithStream(role, message);
+    const resEvent = `chats/messages/${chatbotId}`;
+    const stream = await this.openaiClientService.chatWithStream(
+      chatbotId,
+      message,
+    );
 
     return from(stream).pipe(
       map((part) => ({

@@ -4,7 +4,6 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import * as process from 'process';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
-import { ResponseInterceptor } from './interceptors/response.interceptor';
 import { IoAdapter } from '@nestjs/platform-socket.io';
 
 declare const module: any;

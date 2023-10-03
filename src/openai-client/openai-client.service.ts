@@ -41,8 +41,8 @@ export class OpenaiClientService {
     }
   }
 
-  async chatWithStream(role: ChatbotRole, message: string) {
-    const messages = await this.createMessages(role, message);
+  async chatWithStream(chatbotId: number, message: string) {
+    const messages = await this.createMessages(chatbotId, message);
 
     return this.openai.chat.completions.create({
       messages: messages as any,
