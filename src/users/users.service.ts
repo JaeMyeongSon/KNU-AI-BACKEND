@@ -24,6 +24,7 @@ export class UsersService {
     if (isUserExist) {
       throw new UnauthorizedException('이미 존재하는 이메일입니다.');
     }
+    console.log('중복 통과', email);
     const hashedPassword = await bcrypt.hash(password, 12); //비밀번호 암호화
     //유저 생성
     const returnUser = await this.userModel.create({

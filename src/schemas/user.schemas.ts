@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { IsEmail } from 'class-validator';
 import mongoose from 'mongoose';
 
 @Schema({ timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' } })
@@ -9,6 +10,7 @@ export class User {
   @Prop({ default: new Date(), type: mongoose.Schema.Types.Date })
   updatedAt: Date;
 
+  @IsEmail()
   @Prop({
     required: true,
     unique: true,

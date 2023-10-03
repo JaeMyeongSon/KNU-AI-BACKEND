@@ -8,7 +8,6 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ChatbotsModule } from './chatbots/chatbots.module';
 import * as process from 'process';
 import { UsersModule } from './users/users.module';
-import { AuthController } from './auth/auth.controller';
 import { AuthService } from './auth/auth.service';
 import { AuthModule } from './auth/auth.module';
 
@@ -22,7 +21,7 @@ import { AuthModule } from './auth/auth.module';
     UsersModule,
     AuthModule,
   ],
-  controllers: [AppController, AuthController],
+  controllers: [AppController],
   providers: [AppService, AuthService],
 })
 export class AppModule {}
