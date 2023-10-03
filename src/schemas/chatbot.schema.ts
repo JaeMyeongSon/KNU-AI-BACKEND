@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { ChatbotRole } from '../openai-client/chatbot.role';
+import { ChatbotRole } from '../chatbots/chatbot.role';
 import { OpenaiMessageDto } from '../openai-client/dto/openai-message.dto';
 import { Document } from 'mongoose';
 
