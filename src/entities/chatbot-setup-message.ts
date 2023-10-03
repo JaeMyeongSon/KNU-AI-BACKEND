@@ -19,6 +19,9 @@ export class ChatbotSetupMessage {
   @Column('varchar', { length: 1000 })
   message: string;
 
+  @Column({ name: 'chatbot_id' })
+  chatbotId: number;
+
   @ManyToOne(() => Chatbot, (chatbot) => chatbot.setupMessages, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',

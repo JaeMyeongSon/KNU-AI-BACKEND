@@ -2,9 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import OpenAI from 'openai';
 import { OpenaiMessageDto } from './dto/openai-message.dto';
-import { Chatbot } from '../schemas/chatbot.schema';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { ChatbotSetupMessage } from '../entities/chatbot-setup-message';
 import { OpenaiMessageRole } from './openai-message-role';
 
@@ -16,8 +15,6 @@ export class OpenaiClientService {
     private readonly configService: ConfigService,
     @InjectRepository(ChatbotSetupMessage)
     private chatbotSetupMessageRepository: Repository<ChatbotSetupMessage>,
-    @InjectRepository(Chatbot) private chatbotRepository: Repository<Chatbot>,
-    private dataSource: DataSource,
   ) {
     this.openai = new OpenAI({
       apiKey: this.configService.get('OPENAI_API_KEY'),
@@ -60,7 +57,7 @@ export class OpenaiClientService {
     chatbotId: number,
   ): Promise<OpenaiMessageDto[]> {
     const setupMessages = await this.chatbotSetupMessageRepository.find({
-      where: { chatbot: { id: chatbotId } },
+      where: { chatbotId },
     });
 
     return setupMessages.map(
