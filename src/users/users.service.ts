@@ -8,10 +8,15 @@ import bcrypt from 'bcrypt';
 export class UsersService {
   constructor(@InjectModel(User.name) private userModel: Model<User>) {}
 
-  async getUsers(): Promise<string[]> {
-    const users = await this.userModel.find();
+  // async getUsers(): Promise<string[]> {
+  //   const users = await this.userModel.find();
 
-    return users.map((user): string => user.email);
+  //   return users.map((user): string => user.email);
+  // }
+
+  async findOneUser(email: string) {
+    const user = await this.userModel.findOne({ email: email });
+    return user;
   }
   async createUser(email: string, password: string) {
     //user 중복 검사
