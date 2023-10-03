@@ -4,6 +4,8 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import * as process from 'process';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
+import { ResponseInterceptor } from './interceptors/response.interceptor';
+import { IoAdapter } from '@nestjs/platform-socket.io';
 
 declare const module: any;
 
@@ -21,6 +23,7 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
+  app.useWebSocketAdapter(new IoAdapter(app));
 
   await app.listen(port);
 
