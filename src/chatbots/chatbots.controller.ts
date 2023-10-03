@@ -54,7 +54,7 @@ export class ChatbotsController {
     type: CreateMessageResponseDto,
   })
   async createMessage(@Body() content: CreateMessageRequestDto) {
-    const { id: chatbotId, message } = content;
+    const { chatbotId, message } = content;
     const userId = 'temp';
 
     const userChat = ChatDto.createForm({

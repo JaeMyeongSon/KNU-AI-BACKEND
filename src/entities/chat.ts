@@ -16,8 +16,11 @@ export class Chat {
   @Column('varchar', { length: 1000 })
   message: string;
 
+  @Column({ name: 'chatbot_id' })
+  chatbotId: number;
+
   @ManyToOne(() => Chatbot, {
-    onDelete: 'SET NULL',
+    onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
   @JoinColumn([{ name: 'chatbot_id', referencedColumnName: 'id' }])

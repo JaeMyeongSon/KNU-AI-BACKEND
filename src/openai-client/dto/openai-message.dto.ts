@@ -1,8 +1,10 @@
+import { OpenaiMessageRole } from '../openai-message-role';
+
 export class OpenaiMessageDto {
-  role: 'system' | 'assistant' | 'user';
+  role: OpenaiMessageRole;
   content: string;
 
-  constructor(role: 'system' | 'assistant' | 'user', content: string) {
+  constructor(role: OpenaiMessageRole, content: string) {
     this.role = role;
     this.content = content;
   }
