@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ChatbotRole } from '../../openai-client/chatbot.role';
+import { ChatbotRole } from '../chatbot.role';
 import { ChatbotDocument } from '../../schemas/chatbot.schema';
 
 export class ChatbotDto {

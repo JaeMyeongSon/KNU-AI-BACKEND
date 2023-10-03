@@ -5,6 +5,9 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ChatbotsModule } from './chatbots/chatbots.module';
 import * as process from 'process';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { Chat } from './entities/chat';
+import { Chatbot } from './entities/chatbot';
+import { ChatbotSetupMessage } from './entities/chatbot-setup-message';
 
 @Module({
   imports: [
@@ -17,7 +20,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       username: process.env.MYSQL_DB_USERNAME,
       password: process.env.MYSQL_DB_PASSWORD,
       database: process.env.MYSQL_DB_DATABASE,
-      entities: [],
+      entities: [Chat, Chatbot, ChatbotSetupMessage],
       logging: true,
       keepConnectionAlive: true,
       synchronize: true,
