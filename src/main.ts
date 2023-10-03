@@ -5,12 +5,16 @@ import * as process from 'process';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
 import { ResponseInterceptor } from './interceptors/response.interceptor';
+import passport from 'passport';
+import cookieParser from 'cookie-parser';
+import session from 'express-session';
 
 declare const module: any;
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  const port = process.env.PORT || 8080;
+  app.useGlobalInterceptors(new ResponseInterceptor());
+  app.useGlobalPipes(new ValidationPipe({ transform: true }));
 
   const config = new DocumentBuilder()
     .setTitle('KNU AI')
@@ -20,10 +24,21 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
+  app.use(cookieParser());
+  app.use(
+    session({
+      saveUninitialized: false,
+      resave: false,
+      secret: process.env.COOKIE_SECRET,
+      cookie: {
+        httpOnly: true,
+      },
+    }),
+  );
+  app.use(passport.initialize());
+  app.use(passport.session());
 
-  app.useGlobalInterceptors(new ResponseInterceptor());
-  app.useGlobalPipes(new ValidationPipe({ transform: true }));
-
+  const port = process.env.PORT || 8080;
   await app.listen(port);
 
   if (module.hot) {
@@ -33,3 +48,6 @@ async function bootstrap() {
 }
 
 bootstrap();
+function cookieParser(): any {
+  throw new Error('Function not implemented.');
+}
