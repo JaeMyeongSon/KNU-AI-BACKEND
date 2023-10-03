@@ -1,7 +1,8 @@
 import { Model } from 'mongoose';
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from 'src/schemas/user.schemas';
+import bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -13,11 +14,17 @@ export class UsersService {
     return users.map((user): string => user.email);
   }
   async createUser(email: string, password: string) {
-    const user = await this.userModel.create({
+    //user 중복 검사
+    const isUserExist = await this.userModel.exists({ email });
+    if (isUserExist) {
+      throw new UnauthorizedException('이미 존재하는 이메일입니다.');
+    }
+    const hashedPassword = await bcrypt.hash(password, 12); //비밀번호 암호화
+    //유저 생성
+    const returnUser = await this.userModel.create({
       email,
-      password,
+      password: hashedPassword,
     });
-    console.log(email, ' 생성완료');
-    return user;
+    return returnUser;
   }
 }
