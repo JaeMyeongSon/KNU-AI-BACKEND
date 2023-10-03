@@ -6,6 +6,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
 import { ResponseInterceptor } from './interceptors/response.interceptor';
 import passport from 'passport';
+import cookieParser from 'cookie-parser';
 import session from 'express-session';
 
 declare const module: any;
@@ -23,11 +24,12 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
-  //app.use(cookieParser());
+  app.use(cookieParser());
   app.use(
     session({
       saveUninitialized: false,
       resave: false,
+
       secret: process.env.COOKIE_SECRET,
       cookie: {
         httpOnly: true,
@@ -47,6 +49,3 @@ async function bootstrap() {
 }
 
 bootstrap();
-function cookieParser(): any {
-  throw new Error('Function not implemented.');
-}
