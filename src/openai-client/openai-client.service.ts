@@ -3,8 +3,10 @@ import { ConfigService } from '@nestjs/config';
 import OpenAI from 'openai';
 import { OpenaiMessageDto } from './dto/openai-message.dto';
 import { Chatbot } from '../schemas/chatbot.schema';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { InjectRepository } from '@nestjs/typeorm';
+import { DataSource, Repository } from 'typeorm';
+import { ChatbotSetupMessage } from '../entities/chatbot-setup-message';
+import { OpenaiMessageRole } from './openai-message-role';
 
 @Injectable()
 export class OpenaiClientService {
@@ -12,16 +14,19 @@ export class OpenaiClientService {
 
   constructor(
     private readonly configService: ConfigService,
-    @InjectModel(Chatbot.name) private readonly chatbotModel: Model<Chatbot>,
+    @InjectRepository(ChatbotSetupMessage)
+    private chatbotSetupMessageRepository: Repository<ChatbotSetupMessage>,
+    @InjectRepository(Chatbot) private chatbotRepository: Repository<Chatbot>,
+    private dataSource: DataSource,
   ) {
     this.openai = new OpenAI({
       apiKey: this.configService.get('OPENAI_API_KEY'),
     });
   }
 
-  async chat(id: string, message: string): Promise<string> {
+  async chat(chatbotId: number, message: string): Promise<string> {
     try {
-      const messages = await this.createMessages(id, message);
+      const messages = await this.createMessages(chatbotId, message);
 
       const chatCompletion = await this.openai.chat.completions.create({
         messages: messages as any,
@@ -40,17 +45,26 @@ export class OpenaiClientService {
   }
 
   private async createMessages(
-    id: string,
+    chatbotId: number,
     message: string,
   ): Promise<OpenaiMessageDto[]> {
-    const setupMessages = await this.getSetupMessages(id);
+    const setupMessages = await this.getSetupMessages(chatbotId);
 
-    return [...setupMessages, new OpenaiMessageDto('user', message)];
+    return [
+      ...setupMessages,
+      new OpenaiMessageDto(OpenaiMessageRole.User, message),
+    ];
   }
 
-  private async getSetupMessages(id: string): Promise<OpenaiMessageDto[]> {
-    const chatbot = await this.chatbotModel.findById(id);
+  private async getSetupMessages(
+    chatbotId: number,
+  ): Promise<OpenaiMessageDto[]> {
+    const setupMessages = await this.chatbotSetupMessageRepository.find({
+      where: { chatbot: { id: chatbotId } },
+    });
 
-    return chatbot.setupMessages;
+    return setupMessages.map(
+      ({ role, message }) => new OpenaiMessageDto(role, message),
+    );
   }
 }

@@ -8,7 +8,7 @@ export class GetChatsRequestDto {
     type: String,
     description: '챗봇의 ID',
   })
-  chatbotId: string;
+  chatbotId: number;
 
   @ApiProperty({
     required: false,
@@ -18,5 +18,5 @@ export class GetChatsRequestDto {
   @IsDate()
   @Transform(({ value }) => new Date(value))
   @IsOptional()
-  afterDate: Date;
+  afterDate: Date = new Date(2023, 0, 1);
 }

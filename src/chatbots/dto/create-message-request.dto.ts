@@ -4,9 +4,9 @@ import { IsNotEmpty, IsString } from 'class-validator';
 export class CreateMessageRequestDto {
   @ApiProperty({
     required: true,
-    type: String,
+    type: 'integer',
   })
-  id: string;
+  chatbotId: number;
 
   @ApiProperty({
     required: true,

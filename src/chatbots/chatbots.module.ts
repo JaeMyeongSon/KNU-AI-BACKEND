@@ -1,19 +1,13 @@
 import { Module } from '@nestjs/common';
 import { ChatbotsController } from './chatbots.controller';
 import { ChatbotsService } from './chatbots.service';
-import { MongooseModule } from '@nestjs/mongoose';
-import { Chatbot, ChatbotSchema } from '../schemas/chatbot.schema';
 import { OpenaiClientModule } from '../openai-client/openai-client.module';
-import { Chat, ChatSchema } from '../schemas/chat.schema';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Chatbot } from '../entities/chatbot';
+import { Chat } from '../entities/chat';
 
 @Module({
-  imports: [
-    MongooseModule.forFeature([
-      { name: Chatbot.name, schema: ChatbotSchema },
-      { name: Chat.name, schema: ChatSchema },
-    ]),
-    OpenaiClientModule,
-  ],
+  imports: [TypeOrmModule.forFeature([Chat, Chatbot]), OpenaiClientModule],
   controllers: [ChatbotsController],
   providers: [ChatbotsService],
 })

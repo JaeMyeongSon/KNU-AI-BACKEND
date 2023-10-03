@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { ChatbotRole } from '../chatbot.role';
-import { ChatbotDocument } from '../../schemas/chatbot.schema';
+import { Chatbot } from '../../entities/chatbot';
 
 export class ChatbotDto {
-  static fromSchema(chatbot: ChatbotDocument) {
+  static fromSchema(chatbot: Chatbot) {
     const chatbotDto = new ChatbotDto();
 
     chatbotDto.id = chatbot.id;
@@ -15,12 +15,14 @@ export class ChatbotDto {
 
   @ApiProperty({
     required: true,
+    example: 1,
     description: '챗봇의 ID',
   })
-  id: string;
+  id: number;
 
   @ApiProperty({
     required: true,
+    example: '변호사',
     description: '챗봇의 이름',
   })
   name: string;
@@ -29,6 +31,7 @@ export class ChatbotDto {
     required: true,
     type: String,
     enum: ChatbotRole,
+    example: ChatbotRole.Lawyer,
     description: '챗봇의 역할',
   })
   role: string;

@@ -1,10 +1,10 @@
-import { ChatDocument } from '../../schemas/chat.schema';
+import { Chat } from '../../entities/chat';
 
 export class ChatDto {
-  static fromSchema(chat: ChatDocument) {
+  static fromSchema(chat: Chat) {
     const chatDto = new ChatDto();
 
-    chatDto.chatbotId = chat.chatbotId.toString();
+    chatDto.chatbotId = chat.chatbotId;
     chatDto.message = chat.message;
     chatDto.userId = 'temp';
     chatDto.isUserMessage = chat.isUserMessage;
@@ -14,7 +14,7 @@ export class ChatDto {
   }
 
   static createForm(request: {
-    chatbotId: string;
+    chatbotId: number;
     userId: string;
     message: string;
     isUserMessage: boolean;
@@ -31,7 +31,7 @@ export class ChatDto {
     return chatDto;
   }
 
-  chatbotId: string;
+  chatbotId: number;
 
   userId: string;
 
