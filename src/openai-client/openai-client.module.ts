@@ -1,12 +1,10 @@
 import { Module } from '@nestjs/common';
 import { OpenaiClientService } from './openai-client.service';
-import { MongooseModule } from '@nestjs/mongoose';
-import { Chatbot, ChatbotSchema } from '../schemas/chatbot.schema';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ChatbotSetupMessage } from '../entities/chatbot-setup-message';
 
 @Module({
-  imports: [
-    MongooseModule.forFeature([{ name: Chatbot.name, schema: ChatbotSchema }]),
-  ],
+  imports: [TypeOrmModule.forFeature([ChatbotSetupMessage])],
   providers: [OpenaiClientService],
   exports: [OpenaiClientService],
 })
