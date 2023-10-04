@@ -38,11 +38,7 @@ export class ChatbotsController {
   async getChats(@Query() request: GetChatsRequestDto) {
     const { chatbotId, afterDate } = request;
 
-    const chats = await this.chatbotsService.getChats(
-      chatbotId,
-      'temp',
-      afterDate,
-    );
+    const chats = await this.chatbotsService.getChats(chatbotId, 1, afterDate);
 
     return new GetChatsResponseDto(chats);
   }
@@ -55,7 +51,7 @@ export class ChatbotsController {
   })
   async createMessage(@Body() content: CreateMessageRequestDto) {
     const { chatbotId, message } = content;
-    const userId = 'temp';
+    const userId = 1;
 
     const userChat = ChatDto.createForm({
       chatbotId,
