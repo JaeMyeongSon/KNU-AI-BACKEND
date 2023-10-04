@@ -36,12 +36,11 @@ export class ChatsGateway {
       message,
       isUserMessage: true,
     });
-    this.chatbotsService.saveChat(userChat);
 
-    const stream = await this.openaiClientService.chatWithStream(
-      chatbotId,
-      message,
-    );
+    const [_, stream] = await Promise.all([
+      this.chatbotsService.saveChat(userChat),
+      this.openaiClientService.chatWithStream(chatbotId, message),
+    ]);
 
     return from(stream).pipe(
       map((part) => {
