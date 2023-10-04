@@ -28,28 +28,6 @@ import { UndefinedToNullInterceptor } from 'src/interceptors/undefinedToNull.int
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  // 보안상 전체 유저 조회 삭제
-  // @Get()
-  // @ApiOperation({ summary: '유저 전체 조회' })
-  // @ApiOkResponse({
-  //   description: '유저의 목록',
-  //   type: GetUsersDto,
-  // })
-  // async getAllUsers() {
-  //   return await this.usersService.getUsers();
-  // }
-
-  // @Post()
-  // @ApiOperation({ summary: '유저 생성->추후 로그인으로 대체' })
-  // @ApiOkResponse({
-  //   description: '유저의 생성완료',
-  //   type: PostUserDto,
-  // })
-  // async makeUsers(@Body() content: PostUserDto) {
-  //   const { email, password } = content;
-  //   return await this.usersService.createUser(email, password);
-  // }
-
   @Post()
   @UseGuards(new NotLoggedInGuard())
   @ApiOperation({ summary: '회원가입' })
@@ -77,8 +55,8 @@ export class UsersController {
     description: '서버 에러',
   })
   @ApiOperation({ summary: '로그인' })
+  @UseGuards(LocalAuthGuard) //인터셉터보다 먼저 실행
   @Post('login')
-  @UseGuards(LocalAuthGuard)
   login(@Body() content: LoginReqDto) {
     return content;
   }
@@ -87,8 +65,13 @@ export class UsersController {
   @ApiOperation({ summary: '로그아웃' })
   @Post('logout')
   logOut(@Req() req, @Res() res) {
-    req.logOut();
-    res.clearCookie('connect.sid', { httpOnly: true });
-    res.send('ok');
+    console.log('로그아웃 시작');
+    req.logOut(function () {
+      res.clearCookie('connect.sid', { httpOnly: true });
+      res.send('ok');
+    });
+    console.log('로그아웃 컨트롤러 완료');
+
+    console.log('로그아웃 완료');
   }
 }

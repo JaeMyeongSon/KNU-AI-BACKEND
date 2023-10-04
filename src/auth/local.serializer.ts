@@ -17,16 +17,21 @@ export class LocalSerializer extends PassportSerializer {
 
   serializeUser(user: User, done: CallableFunction) {
     console.log(user, 'serializeUser 함수 test');
-    done(null, user._id);
+    console.log(user._id, ' : user_id test');
+    done(null, user);
   }
 
-  async deserializeUser(userId: string, done: CallableFunction) {
-    return await this.userModel
-      .findById(userId)
-      .then((user) => {
-        console.log('user', user);
-        done(null, user);
-      })
-      .catch((err) => done(err));
+  async deserializeUser(user: User, done: CallableFunction) {
+    console.log(user, 'deserializeUser 함수 시작');
+    done(null, user);
+    console.log('deserializeUser 함수 끝');
   }
+  // deserializeUser(
+  //   payload: any,
+  //   done: (err: Error, payload: string) => void,
+  // ): any {
+  //   console.log('deserializeUser 함수 test');
+  //   done(null, payload);
+  //   console.log('deserializeUser 함수 끝');
+  // }
 }
