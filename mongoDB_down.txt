@@ -1,0 +1,10 @@
+1. 
+https://www.mongodb.com/
+mongodb 7.0.2 version, window64, msi 설치
+
+2. 환경변수에 mongodb 경로추가
+
+3. 터미널에서 다음과 같이 입력
+
+npm install --save @nestjs/mongoose mongoose
+로 orm 전용 패키지 다운로드
