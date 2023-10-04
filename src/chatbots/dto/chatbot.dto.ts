@@ -1,5 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ChatbotRole } from '../chatbot.role';
 import { Chatbot } from '../../entities/chatbot';
 
 export class ChatbotDto {
@@ -30,8 +29,7 @@ export class ChatbotDto {
   @ApiProperty({
     required: true,
     type: String,
-    enum: ChatbotRole,
-    example: ChatbotRole.Lawyer,
+    example: 'lawyer',
     description: '챗봇의 역할',
   })
   role: string;
