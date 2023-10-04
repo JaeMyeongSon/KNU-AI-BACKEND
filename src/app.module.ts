@@ -8,6 +8,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Chat } from './entities/chat';
 import { Chatbot } from './entities/chatbot';
 import { ChatbotSetupMessage } from './entities/chatbot-setup-message';
+import { ChatsModule } from './chats/chats.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { User } from './entities/user';
@@ -31,6 +32,7 @@ import { User } from './entities/user';
     }),
     OpenaiClientModule,
     ChatbotsModule,
+    ChatsModule,
     UsersModule,
     AuthModule,
   ],

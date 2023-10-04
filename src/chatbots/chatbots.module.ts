@@ -10,5 +10,6 @@ import { Chat } from '../entities/chat';
   imports: [TypeOrmModule.forFeature([Chat, Chatbot]), OpenaiClientModule],
   controllers: [ChatbotsController],
   providers: [ChatbotsService],
+  exports: [ChatbotsService],
 })
 export class ChatbotsModule {}

@@ -7,6 +7,7 @@ import { ValidationPipe } from '@nestjs/common';
 import passport from 'passport';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
+import { IoAdapter } from '@nestjs/platform-socket.io';
 
 declare const module: any;
 
@@ -38,6 +39,7 @@ async function bootstrap() {
   app.use(passport.session());
 
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
+  app.useWebSocketAdapter(new IoAdapter(app));
 
   await app.listen(port);
 
