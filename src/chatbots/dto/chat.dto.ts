@@ -6,7 +6,7 @@ export class ChatDto {
 
     chatDto.chatbotId = chat.chatbotId;
     chatDto.message = chat.message;
-    chatDto.userId = 'temp';
+    chatDto.userId = 1;
     chatDto.isUserMessage = chat.isUserMessage;
     chatDto.insertedAt = chat.createdAt;
 
@@ -15,7 +15,7 @@ export class ChatDto {
 
   static createForm(request: {
     chatbotId: number;
-    userId: string;
+    userId: number;
     message: string;
     isUserMessage: boolean;
   }) {
@@ -33,7 +33,7 @@ export class ChatDto {
 
   chatbotId: number;
 
-  userId: string;
+  userId: number;
 
   isUserMessage: boolean;
 

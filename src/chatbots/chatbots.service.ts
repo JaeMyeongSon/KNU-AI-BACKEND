@@ -20,7 +20,7 @@ export class ChatbotsService {
     return chatbots.map((chatbot) => ChatbotDto.fromSchema(chatbot));
   }
 
-  async getChats(chatbotId: number, userId: string, afterDate: Date) {
+  async getChats(chatbotId: number, userId: number, afterDate: Date) {
     const chats = await this.dataSource
       .createQueryBuilder()
       .select('chat')
