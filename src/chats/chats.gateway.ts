@@ -45,7 +45,6 @@ export class ChatsGateway {
     return from(stream).pipe(
       map((part) => {
         const data = part.choices[0]?.delta?.content || '';
-        console.log(data);
         this.sendChunkToClient(client, resEvent, data);
         return data;
       }),
