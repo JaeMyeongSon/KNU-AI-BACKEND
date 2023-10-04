@@ -4,9 +4,6 @@ import mongoose, { SchemaTypes, Types } from 'mongoose';
 
 @Schema({ timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' } })
 export class User {
-  @Prop({ type: SchemaTypes.ObjectId })
-  _id: Types.ObjectId;
-
   @Prop({ default: new Date(), type: mongoose.Schema.Types.Date })
   createdAt: Date;
 

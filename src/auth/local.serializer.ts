@@ -17,7 +17,6 @@ export class LocalSerializer extends PassportSerializer {
 
   serializeUser(user: User, done: CallableFunction) {
     console.log(user, 'serializeUser 함수 test');
-    console.log(user._id, ' : user_id test');
     done(null, user);
   }
 
