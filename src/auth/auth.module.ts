@@ -3,13 +3,14 @@ import { PassportModule } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { LocalStrategy } from './local.strategy';
 import { LocalSerializer } from './local.serializer';
-import { MongooseModule } from '@nestjs/mongoose';
-import { User, UserSchema } from 'src/schemas/user.schemas';
+
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from 'src/entities/user';
 
 @Module({
   imports: [
     PassportModule.register({ session: true }),
-    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    TypeOrmModule.forFeature([User]),
   ],
   providers: [AuthService, LocalStrategy, LocalSerializer],
 })
