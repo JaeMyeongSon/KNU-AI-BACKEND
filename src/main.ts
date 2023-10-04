@@ -13,7 +13,6 @@ declare const module: any;
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const port = process.env.PORT || 8080;
-  app.useGlobalPipes(new ValidationPipe({ transform: true }));
 
   const config = new DocumentBuilder()
     .setTitle('KNU AI')
@@ -29,7 +28,6 @@ async function bootstrap() {
     session({
       saveUninitialized: false,
       resave: false,
-
       secret: process.env.COOKIE_SECRET,
       cookie: {
         httpOnly: true,
