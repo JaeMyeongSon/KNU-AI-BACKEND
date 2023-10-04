@@ -12,10 +12,6 @@ export class UsersService {
     private dataSource: DataSource,
   ) {}
 
-  // async findOneUser(email: string) {
-  //   const user = await this.userModel.findOne({ email: email });
-  //   return user;
-  // }
   async getOneUser(email: string) {
     const user = await this.userRepository.findOne({ where: { email } });
     return user;

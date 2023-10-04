@@ -20,17 +20,19 @@ export class LocalSerializer extends PassportSerializer {
     done(null, user.id);
   }
 
-  async deserializeUser(user: User, done: CallableFunction) {
-    console.log(user, 'deserializeUser 함수 시작');
-    done(null, user);
-    console.log('deserializeUser 함수 끝');
+  async deserializeUser(userId: string, done: CallableFunction) {
+    console.log(userId, 'deserializeUser 함수 시작');
+
+    return await this.usersRepository
+      .findOneOrFail({
+        where: { id: +userId },
+        select: ['id', 'email'],
+      })
+      .then((user) => {
+        console.log('user', user);
+        done(null, user);
+        console.log('deserializeUser 함수 끝');
+      })
+      .catch((error) => done(error));
   }
-  // deserializeUser(
-  //   payload: any,
-  //   done: (err: Error, payload: string) => void,
-  // ): any {
-  //   console.log('deserializeUser 함수 test');
-  //   done(null, payload);
-  //   console.log('deserializeUser 함수 끝');
-  // }
 }
