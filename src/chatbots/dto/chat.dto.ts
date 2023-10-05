@@ -6,7 +6,7 @@ export class ChatDto {
 
     chatDto.chatbotId = chat.chatbotId;
     chatDto.message = chat.message;
-    chatDto.userId = 1;
+    chatDto.userId = chat.userId;
     chatDto.isUserMessage = chat.isUserMessage;
     chatDto.insertedAt = chat.createdAt;
 

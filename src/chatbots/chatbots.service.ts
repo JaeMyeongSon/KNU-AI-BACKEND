@@ -26,21 +26,20 @@ export class ChatbotsService {
       .select('chat')
       .from(Chat, 'chat')
       .where('chat.chatbot_id = :chatbotId', { chatbotId })
+      .andWhere('chat.user_id >= :userId', { userId })
       .andWhere('chat.createdAt >= :afterDate', { afterDate })
       .getMany();
 
     return chats.map((chat) => ChatDto.fromSchema(chat));
   }
 
-  async saveChat(chatbotDto: ChatDto) {
-    const chatbot = await this.chatbotRepository.findOneById(
-      chatbotDto.chatbotId,
-    );
-
+  async saveChat({ chatbotId, userId, message, isUserMessage }: ChatDto) {
     const chat = new Chat();
-    chat.message = chatbotDto.message;
-    chat.isUserMessage = chatbotDto.isUserMessage;
-    chat.chatbot = chatbot;
+
+    chat.chatbotId = chatbotId;
+    chat.userId = userId;
+    chat.message = message;
+    chat.isUserMessage = isUserMessage;
 
     return this.chatRepository.save(chat);
   }

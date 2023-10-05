@@ -2,9 +2,11 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Chat } from './chat';
 
 @Entity({ name: 'users' })
 export class User {
@@ -16,6 +18,9 @@ export class User {
 
   @Column('varchar', { length: 100 })
   password: string;
+
+  @OneToMany(() => Chat, (chat) => chat.user)
+  chats: Chat[];
 
   @CreateDateColumn()
   createdAt: Date;
