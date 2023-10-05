@@ -7,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Chatbot } from './chatbot';
+import { User } from './user';
 
 @Entity({ name: 'chats' })
 export class Chat {
@@ -25,6 +26,16 @@ export class Chat {
   })
   @JoinColumn([{ name: 'chatbot_id', referencedColumnName: 'id' }])
   chatbot: Chatbot;
+
+  @Column({ name: 'user_id' })
+  userId: number;
+
+  @ManyToOne(() => User, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  @JoinColumn([{ name: 'user_id', referencedColumnName: 'id' }])
+  user: User;
 
   @Column('boolean')
   isUserMessage: boolean;

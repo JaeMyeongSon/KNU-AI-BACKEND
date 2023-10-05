@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { ChatbotsService } from './chatbots.service';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { OpenaiClientService } from '../openai-client/openai-client.service';
@@ -9,6 +9,9 @@ import { CreateMessageResponseDto } from './dto/create-message-response.dto';
 import { ChatDto } from './dto/chat.dto';
 import { GetChatsRequestDto } from './dto/get-chats-request.dto';
 import { GetChatsResponseDto } from './dto/get-chats-response.dto';
+import { LoggedInGuard } from '../auth/logged-in.guard';
+import { InjectUser } from '../common/decorators/user.decorator';
+import { User } from '../entities/user';
 
 @ApiTags('Chatbots')
 @Controller('api/chatbots')
@@ -31,27 +34,38 @@ export class ChatbotsController {
   }
 
   @Get('chats')
+  @UseGuards(new LoggedInGuard())
   @ApiOperation({ summary: '챗봇과의 채팅 목록 조회' })
   @ApiOkResponse({
     description: '챗봇과의 채팅 목록',
   })
-  async getChats(@Query() request: GetChatsRequestDto) {
+  async getChats(
+    @Query() request: GetChatsRequestDto,
+    @InjectUser() { id: userId }: User,
+  ) {
     const { chatbotId, afterDate } = request;
 
-    const chats = await this.chatbotsService.getChats(chatbotId, 1, afterDate);
+    const chats = await this.chatbotsService.getChats(
+      chatbotId,
+      userId,
+      afterDate,
+    );
 
     return new GetChatsResponseDto(chats);
   }
 
   @Post('chats')
+  @UseGuards(new LoggedInGuard())
   @ApiOperation({ summary: '챗봇에게 채팅 메시지 전송' })
   @ApiOkResponse({
     description: '챗봇의 응답 메시지',
     type: CreateMessageResponseDto,
   })
-  async createMessage(@Body() content: CreateMessageRequestDto) {
+  async createMessage(
+    @Body() content: CreateMessageRequestDto,
+    @InjectUser() { id: userId }: User,
+  ) {
     const { chatbotId, message } = content;
-    const userId = 1;
 
     const userChat = ChatDto.createForm({
       chatbotId,
