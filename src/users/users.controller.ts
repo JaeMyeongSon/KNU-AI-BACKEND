@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   Post,
   Req,
   Res,
@@ -21,12 +22,26 @@ import { LocalAuthGuard } from 'src/auth/local-auth.guard';
 import { LoggedInGuard } from 'src/auth/logged-in.guard';
 import { LoginReqDto } from './dto/login.request.dto';
 import { UndefinedToNullInterceptor } from 'src/common/interceptors/undefinedToNull.interceptor';
+import { UsersDto } from './dto/users.dto';
+import { InjectUser } from '../common/decorators/user.decorator';
+import { User } from '../entities/user';
 
 @UseInterceptors(UndefinedToNullInterceptor)
 @ApiTags('Users')
 @Controller('api/users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
+
+  @Get()
+  @UseGuards(new LoggedInGuard())
+  @ApiOperation({ summary: '로그인된 유저 조회' })
+  @ApiOkResponse({
+    description: '현재 유저 정보를 반환',
+    type: UsersDto,
+  })
+  getUser(@InjectUser() user: User) {
+    return UsersDto.fromEntity(user);
+  }
 
   @Post()
   @UseGuards(new NotLoggedInGuard())
