@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Get,
   Post,
   Req,
   Res,
@@ -21,7 +20,7 @@ import { NotLoggedInGuard } from 'src/auth/not-logged-in.guard copy';
 import { LocalAuthGuard } from 'src/auth/local-auth.guard';
 import { LoggedInGuard } from 'src/auth/logged-in.guard';
 import { LoginReqDto } from './dto/login.request.dto';
-import { UndefinedToNullInterceptor } from 'src/interceptors/undefinedToNull.interceptor';
+import { UndefinedToNullInterceptor } from 'src/common/interceptors/undefinedToNull.interceptor';
 
 @UseInterceptors(UndefinedToNullInterceptor)
 @ApiTags('Users')

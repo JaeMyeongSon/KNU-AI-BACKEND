@@ -6,7 +6,7 @@ import {
 } from '@nestjs/websockets';
 import { UseFilters } from '@nestjs/common';
 import { OpenaiClientService } from '../openai-client/openai-client.service';
-import { WsExceptionFilter } from '../exception-filters/ws.exception-filter';
+import { WsExceptionFilter } from '../common/exception-filters/ws.exception-filter';
 import { CreateMessageRequestDto } from '../chatbots/dto/create-message-request.dto';
 import { from, map, reduce } from 'rxjs';
 import { ChatDto } from '../chatbots/dto/chat.dto';
