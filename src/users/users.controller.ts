@@ -32,15 +32,16 @@ import { User } from '../entities/user';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @UseGuards(new LoggedInGuard())
+  @Post('/sendVerifyEmail')
+  @UseGuards(new NotLoggedInGuard())
   @ApiOperation({ summary: '이메일 인증 요청' })
   @ApiOkResponse({
-    description: '로그인된 정보로 이메일을 보냄',
+    description: '회원가입 전 이메일 인증',
+    //TODO : email DTO 작성
   })
-  @Post('/sendVerifyEmail')
-  async sendVerification(@InjectUser() user: User) {
-    console.log('email인증 유저 출력 : ', user);
-    return await this.usersService.sendEmailVerifiy(user.email);
+  async sendVerification(@Body() content) {
+    console.log('email인증 출력 : ', content.email);
+    return await this.usersService.sendEmailVerifiy(content.email);
   }
 
   @Get()
@@ -68,7 +69,8 @@ export class UsersController {
   async join(@Body() content: JoinRequestDto) {
     const { email, password } = content;
     // console.log(email, ' : test이메일 출력');
-    return await this.usersService.createUser(email, password);
+    //TODO : JoinReqDto 에 인증번호:verify 추가
+    return await this.usersService.createUser(email, password, 123456);
   }
 
   @ApiResponse({

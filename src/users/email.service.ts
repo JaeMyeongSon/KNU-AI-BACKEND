@@ -26,7 +26,7 @@ export class EmailService {
   async sendVerifyToken(email: string, verifyToken: number) {
     const mailOptions: EmailOptions = {
       to: email,
-      subject: '[쓰자 읏짜~!] 이메일 인증 메일입니다',
+      subject: '[' + process.env.APP_NAME + '] 이메일 인증 메일입니다',
       html: `인증번호: ${verifyToken}`,
     };
     // transporter 객체를 이용해 메일 전송

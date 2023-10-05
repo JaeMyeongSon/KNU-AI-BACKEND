@@ -18,13 +18,21 @@ export class UsersService {
     const user = await this.userRepository.findOne({ where: { email } });
     return user;
   }
-  async createUser(email: string, password: string) {
+  async createUser(email: string, password: string, verify: number) {
     //user 중복 검사
     const user = await this.userRepository.findOne({ where: { email } });
     if (user) {
       throw new UnauthorizedException('이미 존재하는 이메일입니다.');
     }
     console.log('중복 통과', email);
+    const result = 123456;
+    //TODO : query로 토큰 조회 -> email -> token -> creatAt 역순정렬 후 첫번째
+    //const result = await this.emailRepository.findOne({ where: { email, token, createAt : {:createAt-5} } });
+    if (verify != result) {
+      throw new UnauthorizedException('이메일 인증번호가 일치하지 않습니다');
+    }
+    console.log('이메일 인증 통과', verify, 'result : ', result);
+
     const hashedPassword = await bcrypt.hash(password, 12); //비밀번호 암호화
     //유저 생성
     const returnUser = await this.userRepository.save({
@@ -38,7 +46,11 @@ export class UsersService {
     const verifyToken = this.generateRandomNumber();
     console.log('이메일, 토큰: ', email, verifyToken);
     await this.sendVerifyToken(email, verifyToken);
-    // TODO: verifyToken이랑 이메일 캐싱
+    //Todo : email Record 생성
+    const token = await this.emailRepository.save({
+      email,
+      verifyToken,
+    });
   }
 
   async sendVerifyToken(email: string, verifyToken: number) {
