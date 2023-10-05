@@ -59,6 +59,7 @@ export class UsersService {
 
   async verifyEmail(email: string, verifyToken: number) {
     console.log('verifyEmail: ', email, verifyToken);
+    //querybuilder
     //TODO : query로 토큰 조회 -> email -> token -> creatAt 역순정렬 후 첫번째
     //const result =
     //await this.emailRepository.findOne(
