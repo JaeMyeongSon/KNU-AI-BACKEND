@@ -25,7 +25,7 @@ import { User } from './entities/user';
       password: process.env.MYSQL_DB_PASSWORD,
       database: process.env.MYSQL_DB_DATABASE,
       entities: [Chat, Chatbot, ChatbotSetupMessage, User],
-      logging: true,
+      logging: false,
       keepConnectionAlive: true,
       synchronize: true,
       charset: 'utf8mb4',
