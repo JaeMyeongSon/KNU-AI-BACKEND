@@ -25,6 +25,7 @@ import { UndefinedToNullInterceptor } from 'src/common/interceptors/undefinedToN
 import { UsersDto } from './dto/users.dto';
 import { InjectUser } from '../common/decorators/user.decorator';
 import { User } from '../entities/user';
+import { EmailsDto } from './dto/emails.dto';
 
 @UseInterceptors(UndefinedToNullInterceptor)
 @ApiTags('Users')
@@ -37,9 +38,10 @@ export class UsersController {
   @ApiOperation({ summary: '이메일 인증 요청' })
   @ApiOkResponse({
     description: '회원가입 전 이메일 인증',
+    type: EmailsDto,
     //TODO : email DTO 작성
   })
-  async sendVerification(@Body() content) {
+  async sendVerification(@Body() content: EmailsDto) {
     console.log('email인증 출력 : ', content.email);
     return await this.usersService.sendEmailVerifiy(content.email);
   }
@@ -67,10 +69,8 @@ export class UsersController {
     status: 400,
   })
   async join(@Body() content: JoinRequestDto) {
-    const { email, password } = content;
-    // console.log(email, ' : test이메일 출력');
-    //TODO : JoinReqDto 에 인증번호:verify 추가
-    return await this.usersService.createUser(email, password, 123456);
+    const { email, password, verify } = content;
+    return await this.usersService.createUser(email, password, verify);
   }
 
   @ApiResponse({

@@ -5,12 +5,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import { User } from 'src/entities/user';
 import { EmailService } from './email.service';
+import { Email } from 'src/entities/email';
 
 @Injectable()
 export class UsersService {
   constructor(
     private readonly emailService: EmailService,
     @InjectRepository(User) private userRepository: Repository<User>,
+    @InjectRepository(Email) private emailRepository: Repository<Email>,
+
     private dataSource: DataSource,
   ) {}
 
@@ -25,13 +28,11 @@ export class UsersService {
       throw new UnauthorizedException('이미 존재하는 이메일입니다.');
     }
     console.log('중복 통과', email);
-    const result = 123456;
-    //TODO : query로 토큰 조회 -> email -> token -> creatAt 역순정렬 후 첫번째
-    //const result = await this.emailRepository.findOne({ where: { email, token, createAt : {:createAt-5} } });
-    if (verify != result) {
+
+    if (this.verifyEmail(email, verify)) {
       throw new UnauthorizedException('이메일 인증번호가 일치하지 않습니다');
     }
-    console.log('이메일 인증 통과', verify, 'result : ', result);
+    console.log('이메일 인증 통과', verify);
 
     const hashedPassword = await bcrypt.hash(password, 12); //비밀번호 암호화
     //유저 생성
@@ -46,10 +47,9 @@ export class UsersService {
     const verifyToken = this.generateRandomNumber();
     console.log('이메일, 토큰: ', email, verifyToken);
     await this.sendVerifyToken(email, verifyToken);
-    //Todo : email Record 생성
     const token = await this.emailRepository.save({
       email,
-      verifyToken,
+      verify: verifyToken,
     });
   }
 
@@ -59,7 +59,11 @@ export class UsersService {
 
   async verifyEmail(email: string, verifyToken: number) {
     console.log('verifyEmail: ', email, verifyToken);
-    // TODO: 캐싱된 데이터 찾기. 있으면 200, 없으면 Exception
+    //TODO : query로 토큰 조회 -> email -> token -> creatAt 역순정렬 후 첫번째
+    //const result =
+    //await this.emailRepository.findOne(
+    // { where: { email, token, createAt : {:createAt-5} } });
+
     return;
   }
 

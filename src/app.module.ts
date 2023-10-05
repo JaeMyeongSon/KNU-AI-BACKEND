@@ -12,6 +12,7 @@ import { ChatsModule } from './chats/chats.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { User } from './entities/user';
+import { Email } from './entities/email';
 
 @Module({
   imports: [
@@ -24,7 +25,7 @@ import { User } from './entities/user';
       username: process.env.MYSQL_DB_USERNAME,
       password: process.env.MYSQL_DB_PASSWORD,
       database: process.env.MYSQL_DB_DATABASE,
-      entities: [Chat, Chatbot, ChatbotSetupMessage, User],
+      entities: [Chat, Chatbot, ChatbotSetupMessage, User, Email],
       logging: false,
       keepConnectionAlive: true,
       synchronize: true,
