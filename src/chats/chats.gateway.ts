@@ -7,11 +7,11 @@ import {
 import { UseFilters } from '@nestjs/common';
 import { OpenaiClientService } from '../openai-client/openai-client.service';
 import { WsExceptionFilter } from '../common/exception-filters/ws.exception-filter';
-import { CreateMessageRequestDto } from '../chatbots/dto/create-message-request.dto';
 import { from, map, reduce } from 'rxjs';
 import { ChatDto } from '../chatbots/dto/chat.dto';
 import { ChatbotsService } from '../chatbots/chatbots.service';
 import { Socket } from 'socket.io';
+import { CreateMessageUsingSocketRequestDto } from '../chatbots/dto/create-message-using-socket-request.dto';
 
 @WebSocketGateway(8081)
 @UseFilters(WsExceptionFilter)
@@ -26,9 +26,10 @@ export class ChatsGateway {
     @MessageBody() input: string,
     @ConnectedSocket() client: Socket,
   ) {
-    const { chatbotId, message } = JSON.parse(input) as CreateMessageRequestDto;
+    const { chatbotId, userId, message } = JSON.parse(
+      input,
+    ) as CreateMessageUsingSocketRequestDto;
     const resEvent = `chats/messages/${chatbotId}`;
-    const userId = 1;
 
     const userChat = ChatDto.createForm({
       chatbotId,
