@@ -13,7 +13,6 @@ export class UsersService {
     private readonly emailService: EmailService,
     @InjectRepository(User) private userRepository: Repository<User>,
     @InjectRepository(Email) private emailRepository: Repository<Email>,
-
     private dataSource: DataSource,
   ) {}
 
@@ -29,7 +28,8 @@ export class UsersService {
     }
     console.log('중복 통과', email);
 
-    if (this.verifyEmail(email, verify)) {
+    if (!this.verifyEmail(email, verify)) {
+      console.log('이메일 통과 실패');
       throw new UnauthorizedException('이메일 인증번호가 일치하지 않습니다');
     }
     console.log('이메일 인증 통과', verify);
@@ -60,12 +60,35 @@ export class UsersService {
   async verifyEmail(email: string, verifyToken: number) {
     console.log('verifyEmail: ', email, verifyToken);
     //querybuilder
-    //TODO : query로 토큰 조회 -> email -> token -> creatAt 역순정렬 후 첫번째
+    //TODO : query로 토큰 조회 -> email -> token -> creatAt
+    // 역순정렬 후 첫번째
     //const result =
     //await this.emailRepository.findOne(
     // { where: { email, token, createAt : {:createAt-5} } });
+    const nowTime = new Date(Date.now());
+    console.log('회원가입 시각 : ', nowTime);
+    nowTime.setMinutes(nowTime.getMinutes() - 5);
 
-    return;
+    console.log('회원가입 시각 : ', nowTime);
+    const emailToken = await this.dataSource
+      .createQueryBuilder()
+      .select('email')
+      .from(Email, 'email')
+      .where('email.email = :email', { email })
+      //.andWhere('email.verify = :verifyToken', { verifyToken })
+      .andWhere('email.createdAt >= :nowTime', { nowTime })
+      .orderBy('email.createdAt', 'DESC')
+      .getOneOrFail(); //첫번째만 호출됨
+
+    console.log('최종 하나만 출력', emailToken);
+
+    if (Number(emailToken.verify) == verifyToken) {
+      console.log('성공');
+      return true;
+    } else {
+      console.log('실패');
+      return false;
+    }
   }
 
   private generateRandomNumber(): number {
