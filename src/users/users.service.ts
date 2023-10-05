@@ -4,10 +4,12 @@ import bcrypt from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import { User } from 'src/entities/user';
+import { EmailService } from './email.service';
 
 @Injectable()
 export class UsersService {
   constructor(
+    private readonly emailService: EmailService,
     @InjectRepository(User) private userRepository: Repository<User>,
     private dataSource: DataSource,
   ) {}
@@ -30,5 +32,28 @@ export class UsersService {
       password: hashedPassword,
     });
     return returnUser;
+  }
+
+  async sendEmailVerifiy(email: string) {
+    const verifyToken = this.generateRandomNumber();
+    console.log('이메일, 토큰: ', email, verifyToken);
+    await this.sendVerifyToken(email, verifyToken);
+    // TODO: verifyToken이랑 이메일 캐싱
+  }
+
+  async sendVerifyToken(email: string, verifyToken: number) {
+    await this.emailService.sendVerifyToken(email, verifyToken);
+  }
+
+  async verifyEmail(email: string, verifyToken: number) {
+    console.log('verifyEmail: ', email, verifyToken);
+    // TODO: 캐싱된 데이터 찾기. 있으면 200, 없으면 Exception
+    return;
+  }
+
+  private generateRandomNumber(): number {
+    const minm = 100000;
+    const maxm = 999999;
+    return Math.floor(Math.random() * (maxm - minm + 1)) + minm;
   }
 }

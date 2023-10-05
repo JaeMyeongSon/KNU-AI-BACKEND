@@ -32,6 +32,17 @@ import { User } from '../entities/user';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @UseGuards(new LoggedInGuard())
+  @ApiOperation({ summary: '이메일 인증 요청' })
+  @ApiOkResponse({
+    description: '로그인된 정보로 이메일을 보냄',
+  })
+  @Post('/sendVerifyEmail')
+  async sendVerification(@InjectUser() user: User) {
+    console.log('email인증 유저 출력 : ', user);
+    return await this.usersService.sendEmailVerifiy(user.email);
+  }
+
   @Get()
   @UseGuards(new LoggedInGuard())
   @ApiOperation({ summary: '로그인된 유저 조회' })
@@ -86,7 +97,6 @@ export class UsersController {
       res.send('ok');
     });
     console.log('로그아웃 컨트롤러 완료');
-
     console.log('로그아웃 완료');
   }
 }
