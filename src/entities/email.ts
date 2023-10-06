@@ -1,3 +1,4 @@
+import { IsEmail, IsNotEmpty } from 'class-validator';
 import {
   Column,
   CreateDateColumn,
@@ -10,10 +11,13 @@ export class Email {
   @PrimaryGeneratedColumn({ type: 'bigint', name: 'id' })
   id: number;
 
+  @IsEmail()
+  @IsNotEmpty()
   @Column('varchar', { length: 50 })
   email: string;
 
-  @Column('bigint')
+  @IsNotEmpty()
+  @Column('int')
   verify: number;
 
   @CreateDateColumn()

@@ -22,7 +22,7 @@ export class JoinRequestDto {
 
   @ApiProperty({
     required: true,
-    example: '123456',
+    example: 123456,
     description: '이메일로 수신한 인증번호',
   })
   @IsNotEmpty()

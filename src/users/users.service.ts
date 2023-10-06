@@ -2,7 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 
 import bcrypt from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DataSource } from 'typeorm';
+import { Repository, DataSource, Between } from 'typeorm';
 import { User } from 'src/entities/user';
 import { EmailService } from './email.service';
 import { Email } from 'src/entities/email';
@@ -53,42 +53,36 @@ export class UsersService {
     });
   }
 
-  async sendVerifyToken(email: string, verifyToken: number) {
+  private async sendVerifyToken(email: string, verifyToken: number) {
     await this.emailService.sendVerifyToken(email, verifyToken);
   }
 
-  async verifyEmail(email: string, verifyToken: number) {
-    console.log('verifyEmail: ', email, verifyToken);
+  private async verifyEmail(email: string, verifyToken: number) {
+    const beforeDate = new Date(Date.now());
+    const nowDate = new Date(Date.now());
+    beforeDate.setMinutes(beforeDate.getMinutes() - 5);
 
-    const nowTime = new Date(Date.now());
-    console.log('회원가입 시각 : ', nowTime);
-    nowTime.setMinutes(nowTime.getMinutes() - 5);
+    console.log('5분 전 시각 : ', beforeDate);
+    console.log('현재 시각 : ', nowDate);
 
-    console.log('회원가입 시각 : ', nowTime);
-    const emailToken = await this.dataSource
-      .createQueryBuilder()
-      .select('email')
-      .from(Email, 'email')
-      .where('email.email = :email', { email })
-      //.andWhere('email.verify = :verifyToken', { verifyToken })
-      .andWhere('email.createdAt >= :nowTime', { nowTime })
-      .orderBy('email.createdAt', 'DESC')
-      .getOne(); //첫번째만 호출됨
+    const emailVerifyToken = await this.emailRepository.findOne({
+      where: {
+        email: email,
+        verify: verifyToken,
+        createdAt: Between(beforeDate, nowDate),
+      },
+      order: {
+        createdAt: 'DESC',
+      },
+    });
 
-    if (!emailToken) {
-      throw new UnauthorizedException(
-        '이메일 인증버튼을 누르지 않았거나 이메일 인증시간이 만료되었습니다',
+    if (!emailVerifyToken) {
+      throw new Error(
+        '이메일 인증번호가 일치하지 않거나 이메일 인증시간이 만료되었습니다',
       );
     }
-    console.log('최종 하나만 출력', emailToken);
-
-    if (Number(emailToken.verify) == verifyToken) {
-      console.log('성공');
-      return true;
-    } else {
-      console.log('실패');
-      return false;
-    }
+    console.log('findOne 출력', emailVerifyToken);
+    return true;
   }
 
   private generateRandomNumber(): number {

@@ -43,7 +43,7 @@ export class UsersController {
   })
   async sendVerification(@Body() content: EmailsDto) {
     console.log('email인증 출력 : ', content.email);
-    return await this.usersService.sendEmailVerifiy(content.email);
+    await this.usersService.sendEmailVerifiy(content.email);
   }
 
   @Get()
