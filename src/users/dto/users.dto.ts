@@ -18,6 +18,8 @@ export class UsersDto {
   })
   public id: number;
 
+  @IsEmail()
+  @IsNotEmpty()
   @ApiProperty({
     required: true,
     example: 'user1@naver.com',
