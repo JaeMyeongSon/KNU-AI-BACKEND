@@ -87,8 +87,7 @@ export class UsersController {
   @ApiOperation({ summary: '로그인' })
   @UseGuards(LocalAuthGuard) //인터셉터보다 먼저 실행
   @Post('login')
-async login(@InjectUser() user: User) {	  
-    login(@Body() content: LoginReqDto) {
+  async login(@InjectUser() user: User) {
     return UsersDto.fromEntity(user);
   }
 
