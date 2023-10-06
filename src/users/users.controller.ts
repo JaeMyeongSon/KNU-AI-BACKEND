@@ -70,7 +70,9 @@ export class UsersController {
   })
   async join(@Body() content: JoinRequestDto) {
     const { email, password, verify } = content;
-    return await this.usersService.createUser(email, password, verify);
+    // console.log(email, ' : test이메일 출력');
+    const user = await this.usersService.createUser(email, password, verify);
+    return UsersDto.fromEntity(user);
   }
 
   @ApiResponse({
@@ -85,20 +87,17 @@ export class UsersController {
   @ApiOperation({ summary: '로그인' })
   @UseGuards(LocalAuthGuard) //인터셉터보다 먼저 실행
   @Post('login')
-  login(@Body() content: LoginReqDto) {
-    return content;
+  async login(@InjectUser() user: User) {
+    return UsersDto.fromEntity(user);
   }
 
   @UseGuards(new LoggedInGuard()) // 로그인한경우만 사용할수있게함
   @ApiOperation({ summary: '로그아웃' })
   @Post('logout')
   logOut(@Req() req, @Res() res) {
-    console.log('로그아웃 시작');
     req.logOut(function () {
       res.clearCookie('connect.sid', { httpOnly: true });
       res.send('ok');
     });
-    console.log('로그아웃 컨트롤러 완료');
-    console.log('로그아웃 완료');
   }
 }
