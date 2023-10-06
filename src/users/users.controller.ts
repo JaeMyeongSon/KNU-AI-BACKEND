@@ -70,7 +70,9 @@ export class UsersController {
   })
   async join(@Body() content: JoinRequestDto) {
     const { email, password, verify } = content;
-    return await this.usersService.createUser(email, password, verify);
+    // console.log(email, ' : test이메일 출력');
+    const user = await this.usersService.createUser(email, password, verify);
+    return UsersDto.fromEntity(user);
   }
 
   @ApiResponse({
@@ -98,7 +100,5 @@ export class UsersController {
       res.clearCookie('connect.sid', { httpOnly: true });
       res.send('ok');
     });
-    console.log('로그아웃 컨트롤러 완료');
-    console.log('로그아웃 완료');
   }
 }
