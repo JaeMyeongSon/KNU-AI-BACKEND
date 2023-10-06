@@ -8,6 +8,7 @@ import passport from 'passport';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import { IoAdapter } from '@nestjs/platform-socket.io';
+import { HttpExceptionFilter } from './httpException.filter';
 
 declare const module: any;
 
@@ -40,7 +41,7 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
   app.useWebSocketAdapter(new IoAdapter(app));
-
+  app.useGlobalFilters(new HttpExceptionFilter());
   await app.listen(port);
 
   if (module.hot) {
