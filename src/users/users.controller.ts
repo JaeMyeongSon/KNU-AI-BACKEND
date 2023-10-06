@@ -58,7 +58,7 @@ export class UsersController {
     const { email, password } = content;
     // console.log(email, ' : test이메일 출력');
     const user = await this.usersService.createUser(email, password);
-    return UsersDto.fromEntity(await user);
+    return UsersDto.fromEntity(user);
   }
 
   @ApiResponse({
@@ -73,9 +73,8 @@ export class UsersController {
   @ApiOperation({ summary: '로그인' })
   @UseGuards(LocalAuthGuard) //인터셉터보다 먼저 실행
   @Post('login')
-  async login(@Body() content: LoginReqDto) {
-    const user = this.usersService.getOneUser(content.email);
-    return UsersDto.fromEntity(await user);
+  async login(@InjectUser() user: User) {
+    return UsersDto.fromEntity(user);
   }
 
   @UseGuards(new LoggedInGuard()) // 로그인한경우만 사용할수있게함
