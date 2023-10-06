@@ -25,12 +25,26 @@ import { UndefinedToNullInterceptor } from 'src/common/interceptors/undefinedToN
 import { UsersDto } from './dto/users.dto';
 import { InjectUser } from '../common/decorators/user.decorator';
 import { User } from '../entities/user';
+import { EmailsDto } from './dto/emails.dto';
 
 @UseInterceptors(UndefinedToNullInterceptor)
 @ApiTags('Users')
 @Controller('api/users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
+
+  @Post('/sendVerifyEmail')
+  @UseGuards(new NotLoggedInGuard())
+  @ApiOperation({ summary: '이메일 인증 요청' })
+  @ApiOkResponse({
+    description: '회원가입 전 이메일 인증',
+    type: EmailsDto,
+    //TODO : email DTO 작성
+  })
+  async sendVerification(@Body() content: EmailsDto) {
+    console.log('email인증 출력 : ', content.email);
+    await this.usersService.sendEmailVerifiy(content.email);
+  }
 
   @Get()
   @UseGuards(new LoggedInGuard())
@@ -55,9 +69,9 @@ export class UsersController {
     status: 400,
   })
   async join(@Body() content: JoinRequestDto) {
-    const { email, password } = content;
+    const { email, password, verify } = content;
     // console.log(email, ' : test이메일 출력');
-    const user = await this.usersService.createUser(email, password);
+    const user = await this.usersService.createUser(email, password, verify);
     return UsersDto.fromEntity(user);
   }
 
@@ -81,6 +95,7 @@ export class UsersController {
   @ApiOperation({ summary: '로그아웃' })
   @Post('logout')
   logOut(@Req() req, @Res() res) {
+    console.log('로그아웃 시작');
     req.logOut(function () {
       res.clearCookie('connect.sid', { httpOnly: true });
       res.send('ok');

@@ -7,6 +7,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Chat } from './chat';
+import { IsEmail } from 'class-validator';
 
 @Entity({ name: 'users' })
 export class User {

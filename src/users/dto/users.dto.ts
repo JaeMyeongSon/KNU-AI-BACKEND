@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from '../../entities/user';
+import { IsEmail, IsNotEmpty } from 'class-validator';
 
 export class UsersDto {
   static fromEntity({ id, email }: User) {
