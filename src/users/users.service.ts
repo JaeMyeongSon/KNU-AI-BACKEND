@@ -59,12 +59,7 @@ export class UsersService {
 
   async verifyEmail(email: string, verifyToken: number) {
     console.log('verifyEmail: ', email, verifyToken);
-    //querybuilder
-    //TODO : query로 토큰 조회 -> email -> token -> creatAt
-    // 역순정렬 후 첫번째
-    //const result =
-    //await this.emailRepository.findOne(
-    // { where: { email, token, createAt : {:createAt-5} } });
+
     const nowTime = new Date(Date.now());
     console.log('회원가입 시각 : ', nowTime);
     nowTime.setMinutes(nowTime.getMinutes() - 5);
@@ -78,8 +73,13 @@ export class UsersService {
       //.andWhere('email.verify = :verifyToken', { verifyToken })
       .andWhere('email.createdAt >= :nowTime', { nowTime })
       .orderBy('email.createdAt', 'DESC')
-      .getOneOrFail(); //첫번째만 호출됨
+      .getOne(); //첫번째만 호출됨
 
+    if (!emailToken) {
+      throw new UnauthorizedException(
+        '이메일 인증버튼을 누르지 않았거나 이메일 인증시간이 만료되었습니다',
+      );
+    }
     console.log('최종 하나만 출력', emailToken);
 
     if (Number(emailToken.verify) == verifyToken) {
