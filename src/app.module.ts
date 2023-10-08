@@ -30,6 +30,7 @@ import { Email } from './entities/email';
       keepConnectionAlive: true,
       synchronize: true,
       charset: 'utf8mb4',
+      timezone: 'Z',
     }),
     OpenaiClientModule,
     ChatbotsModule,
