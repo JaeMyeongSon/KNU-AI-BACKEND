@@ -2,7 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 
 import bcrypt from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DataSource, Between } from 'typeorm';
+import { Between, DataSource, Repository } from 'typeorm';
 import { User } from 'src/entities/user';
 import { EmailService } from './email.service';
 import { Email } from 'src/entities/email';
@@ -20,6 +20,7 @@ export class UsersService {
     const user = await this.userRepository.findOne({ where: { email } });
     return user;
   }
+
   async createUser(email: string, password: string, verify: number) {
     //user 중복 검사
 
@@ -61,29 +62,15 @@ export class UsersService {
     const nowDate = new Date(Date.now());
     beforeDate.setMinutes(beforeDate.getMinutes() - 5);
 
-    console.log('5분 전 시각 : ', beforeDate);
-    console.log('현재 시각 : ', nowDate);
+    console.log(`${beforeDate}, ${nowDate}`);
 
-    return this.emailRepository
-      .findOne({
-        where: {
-          email: email,
-          verify: verifyToken,
-          createdAt: Between(beforeDate, nowDate),
-        },
-        order: {
-          createdAt: 'DESC',
-        },
-      })
-      .then((emailVerifyToken) => {
-        if (!emailVerifyToken) {
-          throw new Error(
-            '이메일 인증번호가 일치하지 않거나 이메일 인증시간이 만료되었습니다',
-          );
-        }
-        console.log('findOne 출력', emailVerifyToken);
-        return true;
-      });
+    return await this.emailRepository.exist({
+      where: {
+        email: email,
+        verify: verifyToken,
+        createdAt: Between(beforeDate, nowDate),
+      },
+    });
   }
 
   private generateRandomNumber(): number {
