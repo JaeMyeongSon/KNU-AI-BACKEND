@@ -2,7 +2,7 @@ import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 
 import bcrypt from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Between, DataSource, Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { User } from 'src/entities/user';
 import { EmailService } from './email.service';
 import { Email } from 'src/entities/email';
@@ -61,19 +61,12 @@ export class UsersService {
   }
 
   private async verifyEmail(email: string, verifyToken: number) {
-    const beforeDate = new Date(Date.now());
-    const nowDate = new Date(Date.now());
-    beforeDate.setMinutes(beforeDate.getMinutes() - 5);
-
-    console.log(`${beforeDate}, ${nowDate}`);
-
-    return await this.emailRepository.exist({
-      where: {
-        email: email,
-        verify: verifyToken,
-        createdAt: Between(beforeDate, nowDate),
-      },
-    });
+    const cache_verifyToken = await this.cacheManager.get(
+      `${email}'s AuthenticationCode`,
+    );
+    console.log(verifyToken);
+    console.log(cache_verifyToken);
+    return cache_verifyToken == verifyToken;
   }
 
   private generateRandomNumber(): number {
