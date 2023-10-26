@@ -11,12 +11,9 @@ export class Email {
   @PrimaryGeneratedColumn({ type: 'bigint', name: 'id' })
   id: number;
 
-  @IsEmail()
-  @IsNotEmpty()
   @Column('varchar', { length: 50 })
   email: string;
 
-  @IsNotEmpty()
   @Column('int')
   verify: number;
 
