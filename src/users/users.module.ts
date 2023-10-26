@@ -7,7 +7,7 @@ import { EmailService } from './email.service';
 import { Email } from 'src/entities/email';
 import * as redisStore from 'cache-manager-redis-store';
 import type { ClientOpts } from 'redis';
-import { CacheModule } from '@nestjs/common';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [

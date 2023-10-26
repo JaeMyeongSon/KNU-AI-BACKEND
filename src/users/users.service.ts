@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 
 import bcrypt from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -6,10 +6,13 @@ import { Between, DataSource, Repository } from 'typeorm';
 import { User } from 'src/entities/user';
 import { EmailService } from './email.service';
 import { Email } from 'src/entities/email';
+import { Cache } from 'cache-manager';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 
 @Injectable()
 export class UsersService {
   constructor(
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private readonly emailService: EmailService,
     @InjectRepository(User) private userRepository: Repository<User>,
     @InjectRepository(Email) private emailRepository: Repository<Email>,
@@ -46,11 +49,11 @@ export class UsersService {
   async sendEmailVerifiy(email: string) {
     const verifyToken = this.generateRandomNumber();
     console.log('이메일, 토큰: ', email, verifyToken);
+    if (verifyToken) {
+      await this.cacheManager.get(`${email}'s AuthenticationCode`);
+    }
+    await this.cacheManager.set(`${email}'s AuthenticationCode`, verifyToken);
     await this.sendVerifyToken(email, verifyToken);
-    const token = await this.emailRepository.save({
-      email,
-      verify: verifyToken,
-    });
   }
 
   private async sendVerifyToken(email: string, verifyToken: number) {
