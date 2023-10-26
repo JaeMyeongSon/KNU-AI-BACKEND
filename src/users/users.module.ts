@@ -15,7 +15,7 @@ import { CacheModule } from '@nestjs/common';
       store: redisStore,
       host: process.env.HOST,
       port: process.env.REDIS_PORT,
-      ttl: 180,
+      ttl: 300,
     }),
     TypeOrmModule.forFeature([User, Email]),
   ],
