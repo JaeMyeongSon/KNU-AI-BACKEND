@@ -9,7 +9,7 @@ import { Chat } from './entities/chat';
 import { Chatbot } from './entities/chatbot';
 import { ChatbotSetupMessage } from './entities/chatbot-setup-message';
 import { ChatsModule } from './chats/chats.module';
-import { UsersModule } from './users/users.module';
+import { UsersModule } from './users/UsersModule';
 import { AuthModule } from './auth/auth.module';
 import { User } from './entities/user';
 import { Email } from './entities/email';
