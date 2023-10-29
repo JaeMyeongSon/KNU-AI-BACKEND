@@ -14,7 +14,7 @@ import { CacheModule } from '@nestjs/cache-manager';
     CacheModule.register<ClientOpts>({
       store: redisStore,
       host: process.env.HOST,
-      port: process.env.REDIS_PORT,
+      port: parseInt(process.env.REDIS_PORT, 10) || 6379,
       ttl: 300,
     }),
     TypeOrmModule.forFeature([User, Email]),
