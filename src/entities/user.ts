@@ -7,7 +7,6 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Chat } from './chat';
-import { IsEmail } from 'class-validator';
 
 @Entity({ name: 'users' })
 export class User {
@@ -19,6 +18,9 @@ export class User {
 
   @Column('varchar', { length: 100 })
   password: string;
+
+  @Column('int', { default: 10, nullable: false })
+  rateLimit: number;
 
   @OneToMany(() => Chat, (chat) => chat.user)
   chats: Chat[];
