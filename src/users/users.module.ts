@@ -13,7 +13,7 @@ import { CacheModule } from '@nestjs/cache-manager';
   imports: [
     CacheModule.register<ClientOpts>({
       store: redisStore,
-      host: process.env.HOST,
+      host: process.env.REDIS_HOST,
       port: parseInt(process.env.REDIS_PORT, 10) || 6379,
       ttl: 300,
     }),
