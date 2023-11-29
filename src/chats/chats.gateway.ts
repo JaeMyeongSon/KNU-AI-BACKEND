@@ -3,6 +3,7 @@ import {
   MessageBody,
   SubscribeMessage,
   WebSocketGateway,
+  WsException,
 } from '@nestjs/websockets';
 import { UseFilters } from '@nestjs/common';
 import { OpenaiClientService } from '../openai-client/openai-client.service';
@@ -31,6 +32,10 @@ export class ChatsGateway {
     ) as CreateMessageUsingSocketRequestDto;
     const resEvent = `chats/messages/${chatbotId}`;
 
+    if (await this.chatbotsService.isExceedRateLimit(userId)) {
+      throw new WsException('exceed rate limit');
+    }
+
     const userChat = ChatDto.createForm({
       chatbotId,
       userId,
@@ -38,7 +43,7 @@ export class ChatsGateway {
       isUserMessage: true,
     });
 
-    const [_, stream] = await Promise.all([
+    const [, stream] = await Promise.all([
       this.chatbotsService.saveChat(userChat),
       this.openaiClientService.chatWithStream(chatbotId, message),
     ]);
