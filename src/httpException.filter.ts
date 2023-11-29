@@ -1,7 +1,7 @@
 import {
-  ExceptionFilter,
-  Catch,
   ArgumentsHost,
+  Catch,
+  ExceptionFilter,
   HttpException,
   Logger,
 } from '@nestjs/common';
@@ -24,13 +24,14 @@ export class HttpExceptionFilter implements ExceptionFilter {
     this.logger.debug('###########################################');
     this.logger.debug('err :', err);
 
-    if (typeof err !== 'string' && err.statusCode === 400) {
+    if (typeof err === 'string') {
       // class-validator 에러
       return response.status(status).json({
-        error: err.error,
-        errorMessage: err.message,
+        error: status,
+        errorMessage: err,
       });
     }
+
     response.status(status).json({
       error: err.error,
       errorMessage: err.message,
