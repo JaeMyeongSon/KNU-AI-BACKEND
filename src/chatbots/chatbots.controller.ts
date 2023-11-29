@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpException,
+  HttpStatus,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { ChatbotsService } from './chatbots.service';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { OpenaiClientService } from '../openai-client/openai-client.service';
@@ -66,6 +75,13 @@ export class ChatbotsController {
     @InjectUser() { id: userId }: User,
   ) {
     const { chatbotId, message } = content;
+
+    if (await this.chatbotsService.isExceedRateLimit(userId)) {
+      throw new HttpException(
+        'exceed rate limit',
+        HttpStatus.TOO_MANY_REQUESTS,
+      );
+    }
 
     const userChat = ChatDto.createForm({
       chatbotId,

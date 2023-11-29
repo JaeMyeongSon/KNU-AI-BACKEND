@@ -5,9 +5,13 @@ import { OpenaiClientModule } from '../openai-client/openai-client.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Chatbot } from '../entities/chatbot';
 import { Chat } from '../entities/chat';
+import { User } from '../entities/user';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Chat, Chatbot]), OpenaiClientModule],
+  imports: [
+    TypeOrmModule.forFeature([Chat, Chatbot, User]),
+    OpenaiClientModule,
+  ],
   controllers: [ChatbotsController],
   providers: [ChatbotsService],
   exports: [ChatbotsService],
