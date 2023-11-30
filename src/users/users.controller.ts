@@ -53,8 +53,15 @@ export class UsersController {
     description: '현재 유저 정보를 반환',
     type: UsersDto,
   })
-  getUser(@InjectUser() user: User) {
-    return UsersDto.fromEntity(user);
+  async getUser(@InjectUser() { id: userId }: User) {
+    const user = await this.usersService.getUser(userId);
+    const usedChatCount = await this.usersService.getUsedChatCount(userId);
+
+    const userDto = UsersDto.fromEntity(user);
+
+    userDto.currentUsedCount = usedChatCount;
+
+    return userDto;
   }
 
   @Post()
