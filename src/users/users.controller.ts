@@ -108,4 +108,15 @@ export class UsersController {
       res.send('ok');
     });
   }
+
+  @UseGuards(new LoggedInGuard())
+  @ApiOperation({ summary: '프리미엄 가입' })
+  @Post('premium')
+  async enrollPremium(@InjectUser() { id: userId }: User) {
+    if (await this.usersService.existsPremium(userId)) {
+      return;
+    }
+
+    await this.usersService.enrollPremium(userId);
+  }
 }
