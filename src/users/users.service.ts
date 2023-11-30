@@ -6,6 +6,7 @@ import { Between, DataSource, Repository } from 'typeorm';
 import { User } from 'src/entities/user';
 import { EmailService } from './email.service';
 import { Email } from 'src/entities/email';
+import { Chat } from '../entities/chat';
 
 @Injectable()
 export class UsersService {
@@ -16,9 +17,8 @@ export class UsersService {
     private dataSource: DataSource,
   ) {}
 
-  async getOneUser(email: string) {
-    const user = await this.userRepository.findOne({ where: { email } });
-    return user;
+  getUser(userId: number) {
+    return this.userRepository.findOneBy({ id: userId });
   }
 
   async createUser(email: string, password: string, verify: number) {
@@ -47,10 +47,24 @@ export class UsersService {
     const verifyToken = this.generateRandomNumber();
     console.log('이메일, 토큰: ', email, verifyToken);
     await this.sendVerifyToken(email, verifyToken);
-    const token = await this.emailRepository.save({
+    await this.emailRepository.save({
       email,
       verify: verifyToken,
     });
+  }
+
+  getUsedChatCount(userId: number) {
+    const now = new Date();
+    now.setDate(now.getDate() - 1);
+
+    return this.dataSource
+      .createQueryBuilder()
+      .select('chat')
+      .from(Chat, 'chat')
+      .where('chat.isUserMessage = true')
+      .andWhere('chat.user_id = :userId', { userId })
+      .andWhere('chat.createdAt >= :afterDate', { afterDate: now })
+      .getCount();
   }
 
   private async sendVerifyToken(email: string, verifyToken: number) {

@@ -1,13 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from '../../entities/user';
-import { IsEmail, IsNotEmpty } from 'class-validator';
 
 export class UsersDto {
-  static fromEntity({ id, email }: User) {
+  static fromEntity({ id, email, rateLimit }: User) {
     const userDto = new UsersDto();
 
     userDto.id = id;
     userDto.email = email;
+    userDto.rateLimit = rateLimit;
 
     return userDto;
   }
@@ -25,4 +25,18 @@ export class UsersDto {
     description: '유저 이메일',
   })
   public email: string;
+
+  @ApiProperty({
+    required: true,
+    example: '10',
+    description: 'rate limit',
+  })
+  public rateLimit: number;
+
+  @ApiProperty({
+    required: true,
+    example: '3',
+    description: '현재 사용한 채팅 횟수',
+  })
+  public currentUsedCount: number;
 }
