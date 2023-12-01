@@ -13,6 +13,7 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { User } from './entities/user';
 import { Email } from './entities/email';
+import { LoggingModule } from './logging/logging.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { Email } from './entities/email';
     ChatsModule,
     UsersModule,
     AuthModule,
+    LoggingModule,
   ],
 })
 export class AppModule {}
