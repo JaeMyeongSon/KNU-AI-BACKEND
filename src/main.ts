@@ -13,6 +13,10 @@ import { HttpExceptionFilter } from './httpException.filter';
 declare const module: any;
 
 async function bootstrap() {
+  // const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+  //   bufferLogs: true,
+  // });
+  //app.useLogger(app.get(LoggingService)); // 초기 부팅시 출력되는 로그 변경시
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const port = process.env.PORT || 8080;
 
