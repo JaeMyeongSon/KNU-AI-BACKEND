@@ -14,7 +14,6 @@ import { AuthModule } from './auth/auth.module';
 import { User } from './entities/user';
 import { Email } from './entities/email';
 import { LoggingModule } from './logging/logging.module';
-import { AppService } from './logging/app.service';
 
 @Module({
   imports: [
