@@ -15,6 +15,7 @@ import { User } from './entities/user';
 import { Email } from './entities/email';
 import { LoggingModule } from './logging/logging.module';
 import { Premium } from './entities/premium';
+import { AdminsModule } from './admins/admins.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { Premium } from './entities/premium';
     UsersModule,
     AuthModule,
     LoggingModule,
+    AdminsModule,
   ],
 })
 export class AppModule {}
