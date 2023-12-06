@@ -2,11 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { User } from '../entities/user';
+import { Premium } from '../entities/premium';
+import { PremiumInfoDto } from './dto/premiumInfo.dto';
 
 @Injectable()
 export class AdminsService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
+    @InjectRepository(Premium) private premiumRepository: Repository<Premium>,
     private dataSource: DataSource,
   ) {}
 
@@ -32,5 +35,14 @@ export class AdminsService {
 
         return acc;
       }, new Map());
+  }
+
+  async getPremiumInfo() {
+    const premiumCount = await this.premiumRepository.countBy({
+      isExpired: false,
+    });
+    const userCount = await this.userRepository.count();
+
+    return new PremiumInfoDto(premiumCount, userCount);
   }
 }

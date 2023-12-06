@@ -27,8 +27,11 @@ export class AdminsController {
       result.push({ date, count });
     }
 
-    console.log(result);
-
     return result;
+  }
+
+  @Get('premium')
+  getPremiumInfo() {
+    return this.adminsService.getPremiumInfo();
   }
 }
