@@ -18,6 +18,7 @@ async function bootstrap() {
   // });
   //app.useLogger(app.get(LoggingService)); // 초기 부팅시 출력되는 로그 변경시
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  app.enableCors();
   const port = process.env.PORT || 8080;
 
   const config = new DocumentBuilder()
