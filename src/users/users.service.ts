@@ -106,6 +106,37 @@ export class UsersService {
     }
   }
 
+  async unEnrollPrimium(userId: number) {
+    const queryRunner = this.dataSource.createQueryRunner();
+
+    try {
+      await queryRunner.connect();
+      await queryRunner.startTransaction();
+
+      const premium = await queryRunner.manager.findOneBy(Premium, {
+        userId: userId,
+        isExpired: false,
+      });
+
+      if (premium == null) {
+        await queryRunner.commitTransaction();
+        return;
+      }
+
+      premium.isExpired = true;
+      premium.endDate = new Date();
+
+      await queryRunner.manager.save(premium);
+      await queryRunner.manager.update(User, { id: userId }, { rateLimit: 10 });
+
+      await queryRunner.commitTransaction();
+    } catch (e) {
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
   private async sendVerifyToken(email: string, verifyToken: number) {
     await this.emailService.sendVerifyToken(email, verifyToken);
   }

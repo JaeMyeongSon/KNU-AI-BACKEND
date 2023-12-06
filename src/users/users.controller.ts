@@ -1,6 +1,9 @@
 import {
   Body,
+  ConflictException,
   Controller,
+  Delete,
+  ForbiddenException,
   Get,
   Post,
   Req,
@@ -114,9 +117,20 @@ export class UsersController {
   @Post('premium')
   async enrollPremium(@InjectUser() { id: userId }: User) {
     if (await this.usersService.existsPremium(userId)) {
-      return;
+      throw new ConflictException('이미 프리미엄 회원입니다.');
     }
 
     await this.usersService.enrollPremium(userId);
+  }
+
+  @UseGuards(new LoggedInGuard())
+  @ApiOperation({ summary: '프리미엄 가입 해제' })
+  @Delete('premium')
+  async unEnrollPremium(@InjectUser() { id: userId }: User) {
+    if (!(await this.usersService.existsPremium(userId))) {
+      throw new ForbiddenException('프리미엄 회원이 아닙니다.');
+    }
+
+    await this.usersService.unEnrollPrimium(userId);
   }
 }
