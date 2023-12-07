@@ -1,6 +1,9 @@
 import {
   Body,
+  ConflictException,
   Controller,
+  Delete,
+  ForbiddenException,
   Get,
   Post,
   Req,
@@ -107,5 +110,27 @@ export class UsersController {
       res.clearCookie('connect.sid', { httpOnly: true });
       res.send('ok');
     });
+  }
+
+  @UseGuards(new LoggedInGuard())
+  @ApiOperation({ summary: '프리미엄 가입' })
+  @Post('premium')
+  async enrollPremium(@InjectUser() { id: userId }: User) {
+    if (await this.usersService.existsPremium(userId)) {
+      throw new ConflictException('이미 프리미엄 회원입니다.');
+    }
+
+    await this.usersService.enrollPremium(userId);
+  }
+
+  @UseGuards(new LoggedInGuard())
+  @ApiOperation({ summary: '프리미엄 가입 해제' })
+  @Delete('premium')
+  async unEnrollPremium(@InjectUser() { id: userId }: User) {
+    if (!(await this.usersService.existsPremium(userId))) {
+      throw new ForbiddenException('프리미엄 회원이 아닙니다.');
+    }
+
+    await this.usersService.unEnrollPrimium(userId);
   }
 }

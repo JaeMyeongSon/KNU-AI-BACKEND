@@ -7,6 +7,7 @@ import { User } from 'src/entities/user';
 import { EmailService } from './email.service';
 import { Email } from 'src/entities/email';
 import { Chat } from '../entities/chat';
+import { Premium } from '../entities/premium';
 
 @Injectable()
 export class UsersService {
@@ -14,6 +15,7 @@ export class UsersService {
     private readonly emailService: EmailService,
     @InjectRepository(User) private userRepository: Repository<User>,
     @InjectRepository(Email) private emailRepository: Repository<Email>,
+    @InjectRepository(Premium) private premiumRepository: Repository<Premium>,
     private dataSource: DataSource,
   ) {}
 
@@ -65,6 +67,74 @@ export class UsersService {
       .andWhere('chat.user_id = :userId', { userId })
       .andWhere('chat.createdAt >= :afterDate', { afterDate: now })
       .getCount();
+  }
+
+  existsPremium(userId: number) {
+    return this.premiumRepository.exist({
+      where: { userId: userId, isExpired: false },
+    });
+  }
+
+  async enrollPremium(userId: number) {
+    const queryRunner = this.dataSource.createQueryRunner();
+
+    try {
+      await queryRunner.connect();
+      await queryRunner.startTransaction();
+
+      const premium = new Premium();
+
+      premium.userId = userId;
+      premium.startDate = new Date();
+
+      const endDate = new Date();
+      endDate.setMonth(endDate.getMonth() + 1);
+      premium.endDate = endDate;
+
+      await queryRunner.manager.save(premium);
+      await queryRunner.manager.update(
+        User,
+        { id: userId },
+        { rateLimit: 100 },
+      );
+
+      await queryRunner.commitTransaction();
+    } catch (e) {
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  async unEnrollPrimium(userId: number) {
+    const queryRunner = this.dataSource.createQueryRunner();
+
+    try {
+      await queryRunner.connect();
+      await queryRunner.startTransaction();
+
+      const premium = await queryRunner.manager.findOneBy(Premium, {
+        userId: userId,
+        isExpired: false,
+      });
+
+      if (premium == null) {
+        await queryRunner.commitTransaction();
+        return;
+      }
+
+      premium.isExpired = true;
+      premium.endDate = new Date();
+
+      await queryRunner.manager.save(premium);
+      await queryRunner.manager.update(User, { id: userId }, { rateLimit: 10 });
+
+      await queryRunner.commitTransaction();
+    } catch (e) {
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   private async sendVerifyToken(email: string, verifyToken: number) {
