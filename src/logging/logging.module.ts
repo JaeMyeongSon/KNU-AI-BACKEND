@@ -10,5 +10,6 @@ import { MongooseModule } from '@nestjs/mongoose';
   ],
   providers: [LoggingService],
   controllers: [LoggingController],
+  exports: [LoggingService],
 })
 export class LoggingModule {}
