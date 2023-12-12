@@ -6,10 +6,12 @@ import {
   Logger,
 } from '@nestjs/common';
 import { Response } from 'express';
+// import { LoggingService } from './logging/logging.service';
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
   private readonly logger = new Logger(HttpExceptionFilter.name);
+  // constructor(private readonly mylogger: LoggingService) {}
 
   catch(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
@@ -20,6 +22,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       | { error: number; statusCode: 400; message: string[] }; // class-validator 타이핑
 
     this.logger.debug('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+    // this.mylogger.debug('status:', status);
     this.logger.debug('status :', status);
     this.logger.debug('###########################################');
     this.logger.debug('err :', err);

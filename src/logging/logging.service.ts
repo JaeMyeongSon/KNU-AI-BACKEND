@@ -31,6 +31,7 @@ export class LoggingService implements LoggerService {
   }
 
   async debug(message: any, ...optionalParams: any[]) {
+    console.log('this debug');
     const createDebug = await this.loggingModel.create({
       level: Level.debug,
       message: message,
