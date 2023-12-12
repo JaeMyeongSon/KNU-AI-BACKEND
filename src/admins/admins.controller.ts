@@ -1,11 +1,16 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { AdminsService } from './admins.service';
 import { ApiTags } from '@nestjs/swagger';
+import { LoggingService } from '../logging/logging.service';
+import { GetLogsDto } from './dto/getLogs.dto';
 
 @ApiTags('Admins')
 @Controller('api/admins')
 export class AdminsController {
-  constructor(private readonly adminsService: AdminsService) {}
+  constructor(
+    private readonly adminsService: AdminsService,
+    private readonly loggingService: LoggingService,
+  ) {}
 
   @Get('users/count')
   async getUserCounts() {
@@ -33,5 +38,10 @@ export class AdminsController {
   @Get('premium')
   getPremiumInfo() {
     return this.adminsService.getPremiumInfo();
+  }
+
+  @Get('logs')
+  getLogs(@Query() req: GetLogsDto) {
+    return this.loggingService.getLogs(req);
   }
 }

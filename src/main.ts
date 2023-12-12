@@ -44,7 +44,13 @@ async function bootstrap() {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  app.useGlobalPipes(new ValidationPipe({ transform: true }));
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      transformOptions: { enableImplicitConversion: true },
+      forbidNonWhitelisted: true,
+    }),
+  );
   app.useWebSocketAdapter(new IoAdapter(app));
   app.useGlobalFilters(new HttpExceptionFilter());
   await app.listen(port);
