@@ -9,6 +9,7 @@ import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import { IoAdapter } from '@nestjs/platform-socket.io';
 import { HttpExceptionFilter } from './httpException.filter';
+import { LoggingService } from './logging/logging.service';
 
 declare const module: any;
 
@@ -45,7 +46,8 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
   app.useWebSocketAdapter(new IoAdapter(app));
-  app.useGlobalFilters(new HttpExceptionFilter());
+  const logger = app.get<LoggingService>(LoggingService); //커스텀 로거 등록
+  app.useGlobalFilters(new HttpExceptionFilter(logger));
   await app.listen(port);
 
   if (module.hot) {

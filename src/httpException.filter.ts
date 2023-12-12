@@ -6,9 +6,11 @@ import {
   Logger,
 } from '@nestjs/common';
 import { Response } from 'express';
+import { LoggingService } from './logging/logging.service';
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
+  constructor(private readonly mylogger: LoggingService) {}
   private readonly logger = new Logger(HttpExceptionFilter.name);
 
   catch(exception: HttpException, host: ArgumentsHost) {
@@ -19,10 +21,11 @@ export class HttpExceptionFilter implements ExceptionFilter {
       | { message: any; statusCode: number; error: number }
       | { error: number; statusCode: 400; message: string[] }; // class-validator 타이핑
 
-    this.logger.debug('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
-    this.logger.debug('status :', status);
-    this.logger.debug('###########################################');
-    this.logger.debug('err :', err);
+    this.mylogger.debug('status : ' + status + ' error : ' + err.message);
+    // this.logger.debug('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+    // this.logger.debug('status :', status);
+    // this.logger.debug('###########################################');
+    // this.logger.debug('err :', err);
 
     if (typeof err === 'string') {
       // class-validator 에러
