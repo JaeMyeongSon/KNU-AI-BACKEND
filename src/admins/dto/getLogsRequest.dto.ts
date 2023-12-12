@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNumber, IsOptional, Max, Min } from 'class-validator';
 
-export class GetLogsDto {
+export class GetLogsRequestDto {
   @ApiProperty({
     required: false,
     description: '한 페이지 당 로그 수',
