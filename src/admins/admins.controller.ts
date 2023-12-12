@@ -2,7 +2,7 @@ import { Controller, Get, Query } from '@nestjs/common';
 import { AdminsService } from './admins.service';
 import { ApiTags } from '@nestjs/swagger';
 import { LoggingService } from '../logging/logging.service';
-import { GetLogsDto } from './dto/getLogs.dto';
+import { GetLogsRequestDto } from './dto/getLogsRequest.dto';
 
 @ApiTags('Admins')
 @Controller('api/admins')
@@ -41,7 +41,7 @@ export class AdminsController {
   }
 
   @Get('logs')
-  getLogs(@Query() req: GetLogsDto) {
+  getLogs(@Query() req: GetLogsRequestDto) {
     return this.loggingService.getLogs(req);
   }
 }

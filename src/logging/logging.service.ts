@@ -52,6 +52,7 @@ export class LoggingService implements LoggerService {
         sort: { timestamp: -1 }, // 최신 순 정렬
         limit, // 개수 제한
         page, // 페이지 번호
+        select: 'message timestamp level',
       },
     );
   }
