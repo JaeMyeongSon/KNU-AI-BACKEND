@@ -20,7 +20,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       | { message: any; statusCode: number; error: number }
       | { error: number; statusCode: 400; message: string[] }; // class-validator 타이핑
 
-    this.mylogger.debug('status : ' + status + ' error : ' + err.message);
+    this.mylogger.error('status : ' + status + ' error : ' + err.message);
     // this.logger.debug('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
     // this.logger.debug('status :', status);
     // this.logger.debug('###########################################');
