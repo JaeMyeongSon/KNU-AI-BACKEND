@@ -19,6 +19,7 @@ async function bootstrap() {
   // });
   //app.useLogger(app.get(LoggingService)); // 초기 부팅시 출력되는 로그 변경시
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  app.enableCors();
   const port = process.env.PORT || 8080;
 
   const config = new DocumentBuilder()
@@ -44,7 +45,13 @@ async function bootstrap() {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  app.useGlobalPipes(new ValidationPipe({ transform: true }));
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      transformOptions: { enableImplicitConversion: true },
+      forbidNonWhitelisted: true,
+    }),
+  );
   app.useWebSocketAdapter(new IoAdapter(app));
   const logger = app.get<LoggingService>(LoggingService); //커스텀 로거 등록
   app.useGlobalFilters(new HttpExceptionFilter(logger));

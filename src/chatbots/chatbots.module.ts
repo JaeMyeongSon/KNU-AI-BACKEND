@@ -6,11 +6,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Chatbot } from '../entities/chatbot';
 import { Chat } from '../entities/chat';
 import { User } from '../entities/user';
+import { LoggingModule } from '../logging/logging.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Chat, Chatbot, User]),
     OpenaiClientModule,
+    LoggingModule,
   ],
   controllers: [ChatbotsController],
   providers: [ChatbotsService],

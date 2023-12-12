@@ -21,6 +21,7 @@ import { GetChatsResponseDto } from './dto/get-chats-response.dto';
 import { LoggedInGuard } from '../auth/logged-in.guard';
 import { InjectUser } from '../common/decorators/user.decorator';
 import { User } from '../entities/user';
+import { LoggingService } from '../logging/logging.service';
 
 @ApiTags('Chatbots')
 @Controller('api/chatbots')
@@ -28,6 +29,7 @@ export class ChatbotsController {
   constructor(
     private readonly chatbotsService: ChatbotsService,
     private readonly openaiClientService: OpenaiClientService,
+    private readonly logger: LoggingService,
   ) {}
 
   @Get()
@@ -102,6 +104,10 @@ export class ChatbotsController {
     const p2 = this.chatbotsService.saveChat(chatbotChat);
 
     await Promise.all([p1, p2]);
+
+    this.logger.log(
+      `userId: ${userId}, chatbotId: ${chatbotId} - created chat message`,
+    );
 
     return new CreateMessageResponseDto(reply);
   }

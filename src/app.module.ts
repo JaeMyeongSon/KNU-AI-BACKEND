@@ -15,6 +15,9 @@ import { User } from './entities/user';
 import { Email } from './entities/email';
 import { LoggingModule } from './logging/logging.module';
 import { Premium } from './entities/premium';
+import { AdminsModule } from './admins/admins.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import * as path from 'path';
 
 @Module({
   imports: [
@@ -40,6 +43,10 @@ import { Premium } from './entities/premium';
     UsersModule,
     AuthModule,
     LoggingModule,
+    AdminsModule,
+    ServeStaticModule.forRoot({
+      rootPath: path.join(__dirname, '..', 'static'),
+    }),
   ],
 })
 export class AppModule {}

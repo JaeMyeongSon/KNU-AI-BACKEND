@@ -1,12 +1,13 @@
 import { Injectable, LoggerService } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { Logging } from 'src/entities/logging';
+import { PaginateModel } from 'mongoose';
+import { Logging, LoggingDocument } from 'src/entities/logging';
 
 @Injectable()
 export class LoggingService implements LoggerService {
   constructor(
-    @InjectModel(Logging.name) private loggingModel: Model<Logging>,
+    @InjectModel(Logging.name)
+    private loggingModel: PaginateModel<LoggingDocument>,
   ) {}
 
   async log(message: any) {
@@ -43,6 +44,18 @@ export class LoggingService implements LoggerService {
       level: Level.verbose,
       message: message,
     });
+  }
+
+  getLogs({ limit, page }: { limit: number; page: number }) {
+    return this.loggingModel.paginate(
+      {},
+      {
+        sort: { timestamp: -1 }, // 최신 순 정렬
+        limit, // 개수 제한
+        page, // 페이지 번호
+        select: 'message timestamp level',
+      },
+    );
   }
 }
 
