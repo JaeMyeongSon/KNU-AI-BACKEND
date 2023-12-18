@@ -62,6 +62,7 @@ export class UsersController {
 
     const userDto = UsersDto.fromEntity(user);
 
+    userDto.isPremium = await this.usersService.existsPremium(userId);
     userDto.currentUsedCount = usedChatCount;
 
     return userDto;
