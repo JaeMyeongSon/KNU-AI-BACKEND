@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { User } from '../../entities/user';
 
 export class UsersDto {
-  static fromEntity({ id, email, rateLimit }: User) {
+  static fromEntity({ id, email, rateLimit, isPremium }: User) {
     const userDto = new UsersDto();
 
     userDto.id = id;
@@ -39,4 +39,11 @@ export class UsersDto {
     description: '현재 사용한 채팅 횟수',
   })
   public currentUsedCount: number;
+
+  @ApiProperty({
+    required: true,
+    example: true,
+    description: '프리미엄 유무',
+  })
+  public isPremium: boolean;
 }
